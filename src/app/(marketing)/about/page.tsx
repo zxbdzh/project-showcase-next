@@ -2,7 +2,8 @@ import type { Metadata } from "next";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
-import { Badge } from "@/components/ui/badge";
+import { SocialIcon } from "@/components/shared/tech-icon";
+import { AnimatedSkillBar } from "@/components/shared/animated-skill-bar";
 import { getSkills } from "@/features/skills/queries";
 import { getSocialLinks } from "@/features/social-links/queries";
 import { getAdminProfile } from "@/features/profile/queries";
@@ -41,7 +42,7 @@ export default async function AboutPage() {
                 <img
                   src={profile.avatar}
                   alt={profile.name ?? "头像"}
-                  className="size-32 rounded-2xl object-cover"
+                  className="avatar-float size-32 rounded-2xl object-cover"
                 />
               </div>
             )}
@@ -50,7 +51,7 @@ export default async function AboutPage() {
                 <p className="text-brand text-sm font-medium">{profile.headline}</p>
               )}
               <h2 className="mt-2 text-2xl font-semibold tracking-tight">
-                {profile?.name ?? "全栈工程师"}
+                {profile?.name ?? "Java 全栈工程师"}
               </h2>
               {profile?.bio && (
                 <p className="text-muted-foreground mt-4 text-lg leading-relaxed">{profile.bio}</p>
@@ -70,22 +71,17 @@ export default async function AboutPage() {
               {Object.entries(skillCategories).map(([category, categorySkills]) => (
                 <div key={category}>
                   <h3 className="text-muted-foreground mb-4 text-sm font-medium">{category}</h3>
-                  <div className="space-y-3">
+                  <Stagger className="space-y-3">
                     {categorySkills.map((skill) => (
-                      <div key={skill.id} className="flex items-center gap-4">
-                        <span className="w-24 text-sm font-medium">{skill.name}</span>
-                        <div className="bg-muted relative h-2 flex-1 overflow-hidden rounded-full">
-                          <div
-                            className="bg-brand absolute inset-y-0 left-0 rounded-full transition-all"
-                            style={{ width: `${skill.level ?? 0}%` }}
-                          />
-                        </div>
-                        <span className="text-muted-foreground w-8 text-right text-xs">
-                          {skill.level}%
-                        </span>
-                      </div>
+                      <StaggerItem key={skill.id}>
+                        <AnimatedSkillBar
+                          name={skill.name}
+                          level={skill.level ?? 0}
+                          icon={skill.icon}
+                        />
+                      </StaggerItem>
                     ))}
-                  </div>
+                  </Stagger>
                 </div>
               ))}
             </div>
@@ -104,8 +100,9 @@ export default async function AboutPage() {
                       href={link.url}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="border-border/60 bg-card hover:border-brand/40 inline-flex items-center gap-2 rounded-full border px-5 py-2.5 text-sm transition-colors"
+                      className="social-link border-border/60 bg-card hover:border-brand/40 inline-flex items-center gap-2.5 rounded-full border px-5 py-2.5 text-sm transition-all duration-300"
                     >
+                      <SocialIcon platform={link.platform} className="size-4 shrink-0" />
                       {link.platform}
                     </a>
                   </StaggerItem>

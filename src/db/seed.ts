@@ -34,15 +34,15 @@ async function seed() {
     .values({
       id: "profile-zxb",
       userId: "user-zxb",
-      headline: "全栈开发者 · 跨端 · AI 应用",
-      bio: "全栈开发者。独立完成了 10+ 个项目,覆盖 Web 全栈、跨端小程序、桌面应用、嵌入式与数据科学。习惯用 TypeScript 把前后端串成端到端类型安全的闭环,也能用 Java / Python 写后端服务;偏好把复杂需求收敛成简洁、可上线、可维护的产品,并把测试、CI、Docker 与类型安全当作工程底线。",
+      headline: "Java 全栈开发者 · 跨端 · AI 应用",
+      bio: "Java 为主的全栈开发者。独立完成了 10+ 个项目,覆盖 Web 全栈、跨端小程序与桌面应用。后端以 Java / Spring Boot 为主力,也能用 Node.js / Python 写服务;前端用 TypeScript 把界面与接口串成端到端类型安全的闭环。偏好把复杂需求收敛成简洁、可上线、可维护的产品,并把测试、CI、Docker 与类型安全当作工程底线。",
       website: "https://github.com/zxbdzh",
     })
     .onConflictDoUpdate({
       target: profiles.id,
       set: {
-        headline: "全栈开发者 · 跨端 · AI 应用",
-        bio: "全栈开发者。独立完成了 10+ 个项目,覆盖 Web 全栈、跨端小程序、桌面应用、嵌入式与数据科学。习惯用 TypeScript 把前后端串成端到端类型安全的闭环,也能用 Java / Python 写后端服务;偏好把复杂需求收敛成简洁、可上线、可维护的产品,并把测试、CI、Docker 与类型安全当作工程底线。",
+        headline: "Java 全栈开发者 · 跨端 · AI 应用",
+        bio: "Java 为主的全栈开发者。独立完成了 10+ 个项目,覆盖 Web 全栈、跨端小程序与桌面应用。后端以 Java / Spring Boot 为主力,也能用 Node.js / Python 写服务;前端用 TypeScript 把界面与接口串成端到端类型安全的闭环。偏好把复杂需求收敛成简洁、可上线、可维护的产品,并把测试、CI、Docker 与类型安全当作工程底线。",
         website: "https://github.com/zxbdzh",
       },
     });
@@ -51,42 +51,179 @@ async function seed() {
   await db.delete(skills);
   await db.insert(skills).values([
     // 语言
-    { id: "skill-ts", name: "TypeScript", category: "语言", level: 92, sortOrder: 1 },
-    { id: "skill-java", name: "Java", category: "语言", level: 85, sortOrder: 2 },
-    { id: "skill-py", name: "Python", category: "语言", level: 85, sortOrder: 3 },
-    { id: "skill-cs", name: "C#", category: "语言", level: 70, sortOrder: 4 },
+    {
+      id: "skill-java",
+      name: "Java",
+      category: "语言",
+      level: 90,
+      sortOrder: 1,
+      icon: "siOpenjdk",
+    },
+    {
+      id: "skill-ts",
+      name: "TypeScript",
+      category: "语言",
+      level: 88,
+      sortOrder: 2,
+      icon: "siTypescript",
+    },
+    { id: "skill-py", name: "Python", category: "语言", level: 82, sortOrder: 3, icon: "siPython" },
+    { id: "skill-cs", name: "C#", category: "语言", level: 45, sortOrder: 4, icon: "siSharp" },
+    // 后端(主力)
+    {
+      id: "skill-spring",
+      name: "Spring Boot",
+      category: "后端",
+      level: 88,
+      sortOrder: 20,
+      icon: "siSpringboot",
+    },
+    {
+      id: "skill-node",
+      name: "Node.js",
+      category: "后端",
+      level: 82,
+      sortOrder: 21,
+      icon: "siNodedotjs",
+    },
+    {
+      id: "skill-fastapi",
+      name: "FastAPI",
+      category: "后端",
+      level: 78,
+      sortOrder: 22,
+      icon: "siFastapi",
+    },
     // 前端
-    { id: "skill-react", name: "React", category: "前端", level: 90, sortOrder: 10 },
-    { id: "skill-vue", name: "Vue", category: "前端", level: 88, sortOrder: 11 },
-    { id: "skill-next", name: "Next.js", category: "前端", level: 86, sortOrder: 12 },
-    { id: "skill-uniapp", name: "uni-app", category: "前端", level: 85, sortOrder: 13 },
-    { id: "skill-tailwind", name: "Tailwind CSS", category: "前端", level: 88, sortOrder: 14 },
-    // 后端
-    { id: "skill-node", name: "Node.js", category: "后端", level: 85, sortOrder: 20 },
-    { id: "skill-spring", name: "Spring Boot", category: "后端", level: 82, sortOrder: 21 },
-    { id: "skill-fastapi", name: "FastAPI", category: "后端", level: 80, sortOrder: 22 },
+    {
+      id: "skill-react",
+      name: "React",
+      category: "前端",
+      level: 88,
+      sortOrder: 10,
+      icon: "siReact",
+    },
+    {
+      id: "skill-vue",
+      name: "Vue",
+      category: "前端",
+      level: 86,
+      sortOrder: 11,
+      icon: "siVuedotjs",
+    },
+    {
+      id: "skill-next",
+      name: "Next.js",
+      category: "前端",
+      level: 84,
+      sortOrder: 12,
+      icon: "siNextdotjs",
+    },
+    {
+      id: "skill-uniapp",
+      name: "uni-app",
+      category: "前端",
+      level: 84,
+      sortOrder: 13,
+      icon: "siWechat",
+    },
+    {
+      id: "skill-tailwind",
+      name: "Tailwind CSS",
+      category: "前端",
+      level: 86,
+      sortOrder: 14,
+      icon: "siTailwindcss",
+    },
     // 数据库
-    { id: "skill-pg", name: "PostgreSQL", category: "数据库", level: 80, sortOrder: 30 },
-    { id: "skill-mysql", name: "MySQL", category: "数据库", level: 82, sortOrder: 31 },
-    { id: "skill-redis", name: "Redis", category: "数据库", level: 76, sortOrder: 32 },
-    { id: "skill-drizzle", name: "Drizzle ORM", category: "数据库", level: 82, sortOrder: 33 },
+    {
+      id: "skill-mysql",
+      name: "MySQL",
+      category: "数据库",
+      level: 84,
+      sortOrder: 30,
+      icon: "siMysql",
+    },
+    {
+      id: "skill-pg",
+      name: "PostgreSQL",
+      category: "数据库",
+      level: 80,
+      sortOrder: 31,
+      icon: "siPostgresql",
+    },
+    {
+      id: "skill-redis",
+      name: "Redis",
+      category: "数据库",
+      level: 76,
+      sortOrder: 32,
+      icon: "siRedis",
+    },
+    {
+      id: "skill-drizzle",
+      name: "Drizzle ORM",
+      category: "数据库",
+      level: 80,
+      sortOrder: 33,
+      icon: "siDrizzle",
+    },
     // 桌面 / 跨端
-    { id: "skill-electron", name: "Electron", category: "桌面/跨端", level: 82, sortOrder: 40 },
-    { id: "skill-wxapp", name: "微信小程序", category: "桌面/跨端", level: 80, sortOrder: 41 },
+    {
+      id: "skill-electron",
+      name: "Electron",
+      category: "桌面/跨端",
+      level: 82,
+      sortOrder: 40,
+      icon: "siElectron",
+    },
     // 工程化
-    { id: "skill-docker", name: "Docker", category: "工程化", level: 78, sortOrder: 50 },
-    { id: "skill-git", name: "Git", category: "工程化", level: 90, sortOrder: 51 },
-    { id: "skill-vitest", name: "Vitest", category: "工程化", level: 80, sortOrder: 52 },
+    {
+      id: "skill-docker",
+      name: "Docker",
+      category: "工程化",
+      level: 78,
+      sortOrder: 50,
+      icon: "siDocker",
+    },
+    { id: "skill-git", name: "Git", category: "工程化", level: 90, sortOrder: 51, icon: "siGit" },
+    {
+      id: "skill-vitest",
+      name: "Vitest",
+      category: "工程化",
+      level: 80,
+      sortOrder: 52,
+      icon: "siVitest",
+    },
     // AI / 其他
     { id: "skill-ai", name: "LLM 应用集成", category: "AI/其他", level: 76, sortOrder: 60 },
-    { id: "skill-unity", name: "Unity", category: "AI/其他", level: 62, sortOrder: 61 },
+    {
+      id: "skill-unity",
+      name: "Unity",
+      category: "AI/其他",
+      level: 62,
+      sortOrder: 61,
+      icon: "siUnity",
+    },
   ]);
 
   // ===== 社交链接(GitHub 用户名为推断,请核对)=====
   await db.delete(socialLinks);
   await db.insert(socialLinks).values([
-    { id: "social-github", platform: "GitHub", url: "https://github.com/zxbdzh", sortOrder: 1 },
-    { id: "social-email", platform: "Email", url: "mailto:zxb@example.com", sortOrder: 2 },
+    {
+      id: "social-github",
+      platform: "GitHub",
+      url: "https://github.com/zxbdzh",
+      sortOrder: 1,
+      icon: "github",
+    },
+    {
+      id: "social-email",
+      platform: "Email",
+      url: "mailto:zxb@example.com",
+      sortOrder: 2,
+      icon: "email",
+    },
   ]);
 
   // ===== 以下为占位作品数据,本次保持不动 =====

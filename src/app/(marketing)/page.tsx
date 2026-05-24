@@ -4,13 +4,15 @@ import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { buttonVariants } from "@/components/ui/button";
-import { HeroVisual } from "@/components/shared/hero-visual";
+import { HeroTerminal } from "@/components/shared/hero-terminal";
+import { HeroIntro } from "@/components/shared/hero-intro";
+import { TechStackPills } from "@/components/shared/tech-stack-pills";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 
 const stats = [
   { value: "10+", label: "完整项目" },
-  { value: "5", label: "技术领域" },
+  { value: "3", label: "技术领域" },
   { value: "20+", label: "技术栈" },
 ];
 
@@ -19,64 +21,27 @@ export default async function HomePage() {
 
   return (
     <>
-      {/* ① Hero */}
-      <section className="relative flex min-h-[88vh] items-center">
+      {/* ① Hero · 滚动驱动叙事开场 */}
+      <HeroIntro />
+
+      {/* ② 交互式终端 · 技术力展示 */}
+      <section className="pb-24 sm:pb-32">
         <Container>
           <FadeIn>
-            <div className="border-border/60 bg-card/60 mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 backdrop-blur">
-              <span className="relative flex size-2">
-                <span className="absolute inline-flex size-full rounded-full bg-emerald-500/50" />
-                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
-              </span>
-              <span className="text-muted-foreground text-xs font-medium">
-                可参与合作 · 全栈开发者 / 跨端 / AI 应用
-              </span>
-            </div>
+            <HeroTerminal />
           </FadeIn>
-          <FadeIn delay={0.08}>
-            <h1 className="max-w-3xl text-5xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-7xl">
-              构建会上线的
-              <br />
-              <span className="from-brand bg-gradient-to-r to-violet-500 bg-clip-text text-transparent">
-                数字产品。
-              </span>
-            </h1>
-          </FadeIn>
-          <FadeIn delay={0.16}>
-            <p className="text-muted-foreground mt-6 max-w-xl text-lg">
-              从 Web、小程序到桌面端,我交付端到端、会上线的产品 —— 从数据库到像素。
-            </p>
-          </FadeIn>
-          <FadeIn delay={0.24}>
-            <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link
-                href="/projects"
-                className={buttonVariants({ className: "group rounded-full px-5" })}
-              >
-                查看作品
-                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-              </Link>
-              <Link
-                href="/contact"
-                className={buttonVariants({ variant: "outline", className: "rounded-full px-5" })}
-              >
-                联系我
-              </Link>
-            </div>
-          </FadeIn>
-          <div className="mt-12 sm:mt-16">
-            <HeroVisual />
-          </div>
         </Container>
       </section>
 
-      {/* ② 能力数据条 */}
+      {/* ③ 能力数据条 */}
       <section className="border-border/60 bg-muted/40 border-y py-16">
         <Container>
           <Stagger className="grid grid-cols-3 gap-8">
             {stats.map((s) => (
               <StaggerItem key={s.label} className="text-center">
-                <div className="text-4xl font-semibold tracking-tight sm:text-5xl">{s.value}</div>
+                <div className="stats-value text-4xl font-semibold tracking-tight sm:text-5xl">
+                  {s.value}
+                </div>
                 <div className="text-muted-foreground mt-1 text-sm">{s.label}</div>
               </StaggerItem>
             ))}
@@ -84,7 +49,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ③ 精选项目 */}
+      {/* ④ 精选项目 */}
       <section className="py-24 sm:py-32">
         <Container>
           <FadeIn>
@@ -95,14 +60,14 @@ export default async function HomePage() {
               <FadeIn key={p.id} delay={i * 0.08}>
                 <Link
                   href={`/projects/${p.slug}`}
-                  className="group border-border/60 bg-card block h-full rounded-2xl border p-6 transition-shadow hover:shadow-lg"
+                  className="project-card group border-border/60 bg-card block h-full rounded-2xl border p-6 transition-all duration-500"
                 >
                   {p.coverImage ? (
                     <div className="mb-4 aspect-video overflow-hidden rounded-xl">
                       <img
                         src={p.coverImage}
                         alt={p.title}
-                        className="size-full object-cover transition-transform group-hover:scale-[1.03]"
+                        className="size-full object-cover transition-transform duration-700 group-hover:scale-105"
                       />
                     </div>
                   ) : (
@@ -110,14 +75,14 @@ export default async function HomePage() {
                   )}
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium">{p.title}</h3>
-                    <ArrowUpRight className="text-muted-foreground group-hover:text-brand size-4 transition-colors" />
+                    <ArrowUpRight className="text-muted-foreground group-hover:text-brand size-4 transition-all duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                   </div>
                   <p className="text-muted-foreground mt-1 text-sm">{p.summary}</p>
                   <div className="mt-3 flex flex-wrap gap-1.5">
                     {p.techStack?.slice(0, 3).map((tech) => (
                       <span
                         key={tech}
-                        className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-xs"
+                        className="text-muted-foreground bg-muted group-hover:bg-brand/10 group-hover:text-brand rounded-full px-2 py-0.5 text-xs transition-colors duration-300"
                       >
                         {tech}
                       </span>
@@ -142,7 +107,7 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ④ 技术栈 */}
+      {/* ⑤ 技术栈 */}
       <section className="border-border/60 border-t py-24">
         <Container>
           <FadeIn>
@@ -151,32 +116,10 @@ export default async function HomePage() {
           <Stagger className="mt-10 flex flex-wrap gap-3">
             {skills.map((s) => (
               <StaggerItem key={s.id}>
-                <span className="border-border/60 bg-card inline-block rounded-full border px-4 py-2 text-sm">
-                  {s.name}
-                </span>
+                <TechStackPills name={s.name} icon={s.icon} />
               </StaggerItem>
             ))}
           </Stagger>
-        </Container>
-      </section>
-
-      {/* ⑤ 关于预览 */}
-      <section className="py-24">
-        <Container>
-          <FadeIn>
-            <h2 className="max-w-3xl text-3xl leading-snug font-semibold tracking-tight sm:text-4xl">
-              我是一名全栈开发者,热衷于把复杂问题
-              <span className="text-brand">收敛成简洁、可靠的产品</span>。
-            </h2>
-          </FadeIn>
-          <FadeIn delay={0.1}>
-            <Link
-              href="/about"
-              className="text-brand mt-6 inline-flex items-center gap-1 text-sm hover:underline"
-            >
-              了解更多 <ArrowUpRight className="size-4" />
-            </Link>
-          </FadeIn>
         </Container>
       </section>
 
@@ -194,7 +137,7 @@ export default async function HomePage() {
           <FadeIn delay={0.18}>
             <Link
               href="/contact"
-              className={buttonVariants({ className: "mt-8 rounded-full px-6" })}
+              className={buttonVariants({ className: "cta-glow mt-8 rounded-full px-6" })}
             >
               联系我
             </Link>
