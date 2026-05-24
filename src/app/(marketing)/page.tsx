@@ -4,7 +4,7 @@ import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { buttonVariants } from "@/components/ui/button";
-import { HeroScene } from "@/components/three/hero-scene-wrapper";
+import { HeroVisual } from "@/components/shared/hero-visual";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 
@@ -52,7 +52,7 @@ export default async function HomePage() {
           </FadeIn>
           <FadeIn delay={0.3}>
             <div className="mt-16 aspect-[16/7] w-full overflow-hidden rounded-3xl">
-              <HeroScene />
+              <HeroVisual />
             </div>
           </FadeIn>
         </Container>

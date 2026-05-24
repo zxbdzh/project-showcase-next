@@ -145,3 +145,48 @@ html.lenis body {
 .lenis.lenis-stopped {
   overflow: clip;
 }
+
+/* Hero 静态视觉:柔和浮动光晕 */
+@keyframes hero-float-a {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(6%, -8%, 0) scale(1.08);
+  }
+}
+@keyframes hero-float-b {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(-7%, 6%, 0) scale(1.12);
+  }
+}
+@keyframes hero-float-c {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+  50% {
+    transform: translate3d(5%, 7%, 0) scale(0.92);
+  }
+}
+.hero-orb-a {
+  animation: hero-float-a 14s ease-in-out infinite;
+}
+.hero-orb-b {
+  animation: hero-float-b 18s ease-in-out infinite;
+}
+.hero-orb-c {
+  animation: hero-float-c 16s ease-in-out infinite;
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-orb-a,
+  .hero-orb-b,
+  .hero-orb-c {
+    animation: none;
+  }
+}
