@@ -11,17 +11,17 @@ const navItems = [
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
+    <header className="border-border/60 bg-background/70 sticky top-0 z-40 w-full border-b backdrop-blur-xl">
       <Container className="flex h-14 items-center justify-between">
         <Link href="/" className="text-base font-semibold tracking-tight">
           名字<span className="text-brand">.dev</span>
         </Link>
-        <nav className="hidden items-center gap-8 text-sm text-muted-foreground md:flex">
+        <nav className="text-muted-foreground hidden items-center gap-8 text-sm md:flex">
           {navItems.map((item) => (
             <Link
               key={item.href}
               href={item.href}
-              className="transition-colors hover:text-foreground"
+              className="hover:text-foreground transition-colors"
             >
               {item.label}
             </Link>

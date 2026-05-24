@@ -16,13 +16,7 @@ interface FadeInProps {
 }
 
 /** 滚动进入视口时淡入 + 上移(苹果缓动)。prefers-reduced-motion 时直接显示。 */
-export function FadeIn({
-  children,
-  className,
-  delay = 0,
-  y = 24,
-  once = true,
-}: FadeInProps) {
+export function FadeIn({ children, className, delay = 0, y = 24, once = true }: FadeInProps) {
   const reduce = useReducedMotion();
 
   return (

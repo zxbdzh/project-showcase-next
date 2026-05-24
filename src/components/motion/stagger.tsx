@@ -19,13 +19,7 @@ const item: Variants = {
 };
 
 /** 容器:子项依次错峰入场。 */
-export function Stagger({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function Stagger({ children, className }: { children: ReactNode; className?: string }) {
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
 
@@ -43,13 +37,7 @@ export function Stagger({
 }
 
 /** 错峰入场的子项,需置于 <Stagger> 内。 */
-export function StaggerItem({
-  children,
-  className,
-}: {
-  children: ReactNode;
-  className?: string;
-}) {
+export function StaggerItem({ children, className }: { children: ReactNode; className?: string }) {
   const reduce = useReducedMotion();
   if (reduce) return <div className={className}>{children}</div>;
 
