@@ -9,8 +9,8 @@ import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 
 const stats = [
-  { value: "3+", label: "年经验" },
-  { value: "12+", label: "上线项目" },
+  { value: "10+", label: "完整项目" },
+  { value: "5", label: "技术领域" },
   { value: "20+", label: "技术栈" },
 ];
 
@@ -23,24 +23,38 @@ export default async function HomePage() {
       <section className="relative flex min-h-[88vh] items-center">
         <Container>
           <FadeIn>
-            <p className="text-brand mb-4 text-sm font-medium">全栈工程师 · Full-Stack Engineer</p>
+            <div className="border-border/60 bg-card/60 mb-5 inline-flex items-center gap-2 rounded-full border px-3 py-1 backdrop-blur">
+              <span className="relative flex size-2">
+                <span className="absolute inline-flex size-full rounded-full bg-emerald-500/50" />
+                <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
+              </span>
+              <span className="text-muted-foreground text-xs font-medium">
+                可参与合作 · 全栈开发者 / 跨端 / AI 应用
+              </span>
+            </div>
           </FadeIn>
           <FadeIn delay={0.08}>
-            <h1 className="max-w-3xl text-5xl leading-[1.05] font-semibold tracking-tight sm:text-7xl">
+            <h1 className="max-w-3xl text-5xl leading-[1.05] font-semibold tracking-tight text-balance sm:text-7xl">
               构建会上线的
               <br />
-              数字产品。
+              <span className="from-brand bg-gradient-to-r to-violet-500 bg-clip-text text-transparent">
+                数字产品。
+              </span>
             </h1>
           </FadeIn>
           <FadeIn delay={0.16}>
             <p className="text-muted-foreground mt-6 max-w-xl text-lg">
-              我设计并交付端到端的 Web 应用 —— 从数据库到像素。
+              从 Web、小程序到桌面端,我交付端到端、会上线的产品 —— 从数据库到像素。
             </p>
           </FadeIn>
           <FadeIn delay={0.24}>
             <div className="mt-8 flex flex-wrap items-center gap-3">
-              <Link href="/projects" className={buttonVariants({ className: "rounded-full px-5" })}>
+              <Link
+                href="/projects"
+                className={buttonVariants({ className: "group rounded-full px-5" })}
+              >
                 查看作品
+                <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
               </Link>
               <Link
                 href="/contact"
@@ -50,11 +64,9 @@ export default async function HomePage() {
               </Link>
             </div>
           </FadeIn>
-          <FadeIn delay={0.3}>
-            <div className="mt-16 aspect-[16/7] w-full overflow-hidden rounded-3xl">
-              <HeroVisual />
-            </div>
-          </FadeIn>
+          <div className="mt-12 sm:mt-16">
+            <HeroVisual />
+          </div>
         </Container>
       </section>
 
@@ -153,7 +165,7 @@ export default async function HomePage() {
         <Container>
           <FadeIn>
             <h2 className="max-w-3xl text-3xl leading-snug font-semibold tracking-tight sm:text-4xl">
-              我是一名全栈工程师,热衷于把复杂问题
+              我是一名全栈开发者,热衷于把复杂问题
               <span className="text-brand">收敛成简洁、可靠的产品</span>。
             </h2>
           </FadeIn>
