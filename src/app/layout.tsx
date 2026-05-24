@@ -13,10 +13,10 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: {
-    default: "全栈工程师 · 作品集",
-    template: "%s · 全栈工程师作品集",
+    default: "Java 全栈工程师 · 作品集",
+    template: "%s · Java 全栈工程师作品集",
   },
-  description: "全栈开发者的项目作品集与技术展示。",
+  description: "Java 全栈开发者的项目作品集与技术展示。",
 };
 
 export default function RootLayout({

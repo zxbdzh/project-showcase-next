@@ -4,8 +4,9 @@ export const runtime = "edge";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const title = searchParams.get("title") ?? "全栈工程师 · 作品集";
-  const description = searchParams.get("description") ?? "端到端 Web 应用开发";
+  const title = searchParams.get("title") ?? "Java 全栈工程师 · 作品集";
+  const description =
+    searchParams.get("description") ?? "Java / Spring Boot 后端 · 端到端 Web 应用开发";
 
   return new ImageResponse(
     <div
@@ -29,7 +30,7 @@ export async function GET(req: Request) {
           marginBottom: 24,
         }}
       >
-        全栈工程师 · 作品集
+        Java 全栈工程师 · 作品集
       </div>
       <div
         style={{
