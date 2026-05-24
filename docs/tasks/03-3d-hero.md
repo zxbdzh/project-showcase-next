@@ -1,6 +1,6 @@
 # 任务 03 · 3D Hero(亮点 A · 滚动驱动)
 
-- **状态**:待开始
+- **状态**:已完成
 - **波次**:Wave 2
 - **依赖**:02 设计系统
 - **可与之并行**:04 鉴权、06 前台、07 AI
@@ -12,12 +12,12 @@
 
 ## 交付物(checklist)
 
-- [ ] 安装 `three` `@react-three/fiber` `@react-three/drei` `@react-three/postprocessing`
-- [ ] `components/three/HeroScene.tsx`(`'use client'`):**玻璃折射几何体**(晶体/扭结造型 + drei `MeshTransmissionMaterial`),折射与边缘泛光用品牌色 Indigo `#4F46E5`
-- [ ] **滚动驱动**:用 drei `ScrollControls` + `useScroll`,把滚动进度映射到相机/物体的旋转与缩放;文字段随进度淡入(配合 02 的 `FadeIn`)
-- [ ] 首页通过 `next/dynamic`(`ssr: false`)懒加载,提供静态 fallback(海报图),避免拖累首屏 LCP
-- [ ] **降级策略**:移动端 / 低端设备降复杂度或回退静态海报
-- [ ] 尊重 `prefers-reduced-motion`:关闭滚动驱动动画,保留静态展示
+- [x] 安装 `three` `@react-three/fiber` `@react-three/drei` `@react-three/postprocessing`
+- [x] `components/three/hero-scene.tsx`(`'use client'`):**玻璃折射几何体**(晶体/扭结造型 + drei `MeshTransmissionMaterial`),折射与边缘泛光用品牌色 Indigo `#4F46E5`
+- [x] **滚动驱动**:用 drei `ScrollControls` + `useScroll`,把滚动进度映射到相机/物体的旋转与缩放;文字段随进度淡入(配合 02 的 `FadeIn`)
+- [x] 首页通过 `next/dynamic`(`ssr: false`)懒加载,提供静态 fallback(海报图),避免拖累首屏 LCP
+- [x] **降级策略**:移动端 / 低端设备降复杂度或回退静态海报
+- [x] 尊重 `prefers-reduced-motion`:关闭滚动驱动动画,保留静态展示
 - [ ] 按需引入 postprocessing(轻量 bloom 等),控制 bundle
 
 ## 技术要点

@@ -6,6 +6,10 @@
 
 - **Wave 0 · 脚手架**:Next.js 16 + React 19 + Tailwind v4 + TS 6(strict),生产构建通过,git 初始化(`main`)。
 - **Wave 1 · 02 设计系统**:Tailwind v4 主题 + shadcn/ui 16组件 + 明暗主题 + Lenis平滑滚动 + Framer Motion动画封装 + 前台/后台布局骨架。
+- **Wave 2 · 03 3D Hero**:R3F + drei `ScrollControls` 滚动驱动玻璃折射几何体,移动端降级 + `prefers-reduced-motion` 静态回退。
+- **Wave 2 · 04 鉴权**:Auth.js v5 + Drizzle adapter + GitHub OAuth + JWT RBAC,`/admin` 路由保护 + 登录页。
+- **Wave 2 · 06 前台展示**:项目列表/详情(筛选/搜索/MDX/浏览量)、关于页(技能进度条)、联系页(Server Action)、SEO(`generateMetadata` + OG image + sitemap + robots)。
+- **Wave 2 · 07 流式 AI**:Vercel AI SDK + GLM 端点 + `streamObject` 结构化标签生成 API。
 
 ## 并行波次
 
@@ -17,10 +21,10 @@
 
 ### Wave 2 — 依赖 Wave 1
 
-- [03 3D Hero](tasks/03-3d-hero.md) — 依赖 **02**
-- [04 鉴权](tasks/04-auth.md) — 依赖 **01**
-- [06 前台展示](tasks/06-public-site.md) — 依赖 **01 + 02**
-- [07 流式 AI](tasks/07-ai-streaming.md) — 依赖 **01**(`lib/ai.ts` 可先独立)
+- [03 3D Hero](tasks/03-3d-hero.md) — 依赖 **02** ✅
+- [04 鉴权](tasks/04-auth.md) — 依赖 **01** ✅
+- [06 前台展示](tasks/06-public-site.md) — 依赖 **01 + 02** ✅
+- [07 流式 AI](tasks/07-ai-streaming.md) — 依赖 **01**(`lib/ai.ts` 可先独立) ✅
 
 ### Wave 3 — 依赖 Wave 2
 
