@@ -1,6 +1,6 @@
 # 任务 06 · 前台展示与 SEO
 
-- **状态**:待开始
+- **状态**:已完成
 - **波次**:Wave 2
 - **依赖**:01 数据层、02 设计系统
 - **可与之并行**:03 3D Hero、04 鉴权、07 AI
@@ -12,12 +12,12 @@
 
 ## 交付物(checklist)
 
-- [ ] 首页 `app/(marketing)/page.tsx`:集成 3D Hero + 精选项目 + 技能概览
-- [ ] 项目列表 `projects/`:按分类/标签**筛选**、关键词**搜索**、分页 —— 全部走 URL `searchParams`(可分享、SSR 友好)
-- [ ] 项目详情 `projects/[slug]/`:MDX 渲染(`next-mdx-remote`)、浏览量 +1、相关项目
-- [ ] 关于页:技能(可做能力雷达/进度)、个人简介
-- [ ] 联系页:表单(Server Action 提交)+ 社交链接
-- [ ] **SEO**:`generateMetadata`(标题/描述/canonical)、动态 OG image(`app/api/og/route.tsx`)、`app/sitemap.ts`、`app/robots.ts`
+- [x] 首页 `app/(marketing)/page.tsx`:集成 3D Hero + 精选项目 + 技能概览
+- [x] 项目列表 `projects/`:按分类/标签**筛选**、关键词**搜索**、分页 —— 全部走 URL `searchParams`(可分享、SSR 友好)
+- [x] 项目详情 `projects/[slug]/`:MDX 渲染(`next-mdx-remote`)、浏览量 +1、相关项目
+- [x] 关于页:技能(能力进度条)、个人简介
+- [x] 联系页:表单(Server Action 提交)+ 社交链接
+- [x] **SEO**:`generateMetadata`(标题/描述/canonical)、动态 OG image(`app/api/og/route.tsx`)、`app/sitemap.ts`、`app/robots.ts`
 - [ ] **性能**:`next.config` 开 `cacheComponents`(PPR);静态外壳 + 动态数据用 `<Suspense>` streaming
 
 ## 技术要点
