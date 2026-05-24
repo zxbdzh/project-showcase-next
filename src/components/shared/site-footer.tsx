@@ -1,0 +1,26 @@
+import Link from "next/link";
+import { Container } from "./container";
+
+export function SiteFooter() {
+  return (
+    <footer className="border-t border-border/60 py-12 text-sm text-muted-foreground">
+      <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
+        <p>© {new Date().getFullYear()} 名字. 用 Next.js 构建.</p>
+        <div className="flex items-center gap-6">
+          <Link
+            href="https://github.com"
+            className="transition-colors hover:text-foreground"
+          >
+            GitHub
+          </Link>
+          <Link href="/projects" className="transition-colors hover:text-foreground">
+            作品
+          </Link>
+          <Link href="/contact" className="transition-colors hover:text-foreground">
+            联系
+          </Link>
+        </div>
+      </Container>
+    </footer>
+  );
+}

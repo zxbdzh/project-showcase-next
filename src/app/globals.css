@@ -1,0 +1,146 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+/* ===== Apple 风设计系统 · 品牌色 Indigo #4F46E5 ===== */
+/* 单一真相源见 docs/design-system.md */
+
+:root {
+  --radius: 0.75rem;
+
+  /* 中性底 / 文字 */
+  --background: #ffffff;
+  --foreground: #1d1d1f;
+  --card: #ffffff;
+  --card-foreground: #1d1d1f;
+  --popover: #ffffff;
+  --popover-foreground: #1d1d1f;
+
+  /* 品牌色(Indigo)= primary */
+  --primary: #4f46e5;
+  --primary-foreground: #ffffff;
+
+  /* 次级 / 苹果浅灰段 */
+  --secondary: #f5f5f7;
+  --secondary-foreground: #1d1d1f;
+  --muted: #f5f5f7;
+  --muted-foreground: #6e6e73;
+
+  /* 中性 hover 强调(shadcn accent 保持中性,品牌强调用 --brand) */
+  --accent: #f5f5f7;
+  --accent-foreground: #1d1d1f;
+
+  --destructive: #ff3b30;
+  --destructive-foreground: #ffffff;
+
+  --border: #e5e5ea;
+  --input: #e5e5ea;
+  --ring: #4f46e5;
+
+  /* 品牌扩展 token(按钮/链接/进度/3D 折射) */
+  --brand: #4f46e5;
+  --brand-hover: #4338ca;
+  --brand-subtle: #eef2ff;
+
+  /* 字体:Mac/iOS 原生 SF Pro,其余 Inter(next/font 注入 --font-inter)兜底 */
+  --font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text",
+    var(--font-inter), system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+}
+
+.dark {
+  --background: #000000;
+  --foreground: #f5f5f7;
+  --card: #1c1c1e;
+  --card-foreground: #f5f5f7;
+  --popover: #1c1c1e;
+  --popover-foreground: #f5f5f7;
+
+  --primary: #818cf8;
+  --primary-foreground: #0b0b0f;
+
+  --secondary: #1c1c1e;
+  --secondary-foreground: #f5f5f7;
+  --muted: #1c1c1e;
+  --muted-foreground: #a1a1a6;
+
+  --accent: #1c1c1e;
+  --accent-foreground: #f5f5f7;
+
+  --destructive: #ff453a;
+  --destructive-foreground: #0b0b0f;
+
+  --border: #2c2c2e;
+  --input: #2c2c2e;
+  --ring: #818cf8;
+
+  --brand: #818cf8;
+  --brand-hover: #a5b4fc;
+  --brand-subtle: #1e1b4b;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-subtle: var(--brand-subtle);
+
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+}
+
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans);
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  /* 苹果风:大标题紧字距 */
+  h1,
+  h2,
+  h3 {
+    letter-spacing: -0.02em;
+  }
+}
+
+/* Lenis 平滑滚动 */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-stopped {
+  overflow: clip;
+}
