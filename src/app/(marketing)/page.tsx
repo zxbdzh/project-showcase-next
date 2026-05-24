@@ -4,6 +4,9 @@ import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
 import { buttonVariants } from "@/components/ui/button";
+import { HeroScene } from "@/components/three/hero-scene-wrapper";
+import { getFeaturedProjects } from "@/features/projects/queries";
+import { getSkills } from "@/features/skills/queries";
 
 const stats = [
   { value: "3+", label: "年经验" },
@@ -11,32 +14,9 @@ const stats = [
   { value: "20+", label: "技术栈" },
 ];
 
-const featured = [
-  {
-    title: "项目 Alpha",
-    desc: "一句话亮点描述,说明它解决了什么。",
-    stack: "Next.js · TS · Postgres",
-  },
-  { title: "项目 Beta", desc: "一句话亮点描述,说明它解决了什么。", stack: "React · Node · Redis" },
-  { title: "项目 Gamma", desc: "一句话亮点描述,说明它解决了什么。", stack: "Vue · Spring Boot" },
-];
+export default async function HomePage() {
+  const [featured, skills] = await Promise.all([getFeaturedProjects(3), getSkills()]);
 
-const skills = [
-  "TypeScript",
-  "React",
-  "Next.js",
-  "Vue",
-  "Node.js",
-  "Java",
-  "Spring Boot",
-  "PostgreSQL",
-  "Redis",
-  "Docker",
-  "Tailwind",
-  "Three.js",
-];
-
-export default function HomePage() {
   return (
     <>
       {/* ① Hero */}
@@ -70,10 +50,9 @@ export default function HomePage() {
               </Link>
             </div>
           </FadeIn>
-          {/* 3D Hero 占位 —— 任务 03 接入玻璃折射几何体 */}
           <FadeIn delay={0.3}>
-            <div className="border-border/60 from-brand-subtle text-muted-foreground mt-16 flex aspect-[16/7] w-full items-center justify-center rounded-3xl border bg-gradient-to-b to-transparent text-sm">
-              3D Hero(滚动驱动)占位
+            <div className="mt-16 aspect-[16/7] w-full overflow-hidden rounded-3xl">
+              <HeroScene />
             </div>
           </FadeIn>
         </Container>
@@ -101,22 +80,53 @@ export default function HomePage() {
           </FadeIn>
           <div className="mt-12 grid gap-6 md:grid-cols-3">
             {featured.map((p, i) => (
-              <FadeIn key={p.title} delay={i * 0.08}>
+              <FadeIn key={p.id} delay={i * 0.08}>
                 <Link
-                  href="/projects"
+                  href={`/projects/${p.slug}`}
                   className="group border-border/60 bg-card block h-full rounded-2xl border p-6 transition-shadow hover:shadow-lg"
                 >
-                  <div className="bg-muted mb-4 aspect-video rounded-xl" />
+                  {p.coverImage ? (
+                    <div className="mb-4 aspect-video overflow-hidden rounded-xl">
+                      <img
+                        src={p.coverImage}
+                        alt={p.title}
+                        className="size-full object-cover transition-transform group-hover:scale-[1.03]"
+                      />
+                    </div>
+                  ) : (
+                    <div className="bg-muted mb-4 aspect-video rounded-xl" />
+                  )}
                   <div className="flex items-center justify-between">
                     <h3 className="font-medium">{p.title}</h3>
                     <ArrowUpRight className="text-muted-foreground group-hover:text-brand size-4 transition-colors" />
                   </div>
-                  <p className="text-muted-foreground mt-1 text-sm">{p.desc}</p>
-                  <p className="text-muted-foreground mt-3 text-xs">{p.stack}</p>
+                  <p className="text-muted-foreground mt-1 text-sm">{p.summary}</p>
+                  <div className="mt-3 flex flex-wrap gap-1.5">
+                    {p.techStack?.slice(0, 3).map((tech) => (
+                      <span
+                        key={tech}
+                        className="text-muted-foreground bg-muted rounded-full px-2 py-0.5 text-xs"
+                      >
+                        {tech}
+                      </span>
+                    ))}
+                  </div>
                 </Link>
               </FadeIn>
             ))}
           </div>
+          {featured.length > 0 && (
+            <FadeIn delay={0.3}>
+              <div className="mt-10 text-center">
+                <Link
+                  href="/projects"
+                  className={buttonVariants({ variant: "outline", className: "rounded-full px-5" })}
+                >
+                  查看全部作品
+                </Link>
+              </div>
+            </FadeIn>
+          )}
         </Container>
       </section>
 
@@ -128,9 +138,9 @@ export default function HomePage() {
           </FadeIn>
           <Stagger className="mt-10 flex flex-wrap gap-3">
             {skills.map((s) => (
-              <StaggerItem key={s}>
+              <StaggerItem key={s.id}>
                 <span className="border-border/60 bg-card inline-block rounded-full border px-4 py-2 text-sm">
-                  {s}
+                  {s.name}
                 </span>
               </StaggerItem>
             ))}
