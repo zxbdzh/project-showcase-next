@@ -1,6 +1,6 @@
 # 任务 07 · 流式 AI(亮点 B)
 
-- **状态**:待开始
+- **状态**:已完成
 - **波次**:Wave 2(`lib/ai.ts` 可独立先做)/ Wave 3(后台集成)
 - **依赖**:01 数据层;后台集成依赖 05 后台 CMS
 - **可与之并行**:03 3D Hero、04 鉴权、06 前台
@@ -11,9 +11,9 @@
 
 ## 交付物(checklist)
 
-- [ ] 安装 `ai` `@ai-sdk/openai`
-- [ ] `src/lib/ai.ts`:用 `createOpenAI({ baseURL: GLM端点, apiKey: 服务端密钥 })` 配置 provider(`GLM_API_KEY` / `GLM_BASE_URL` / `GLM_MODEL` 经 `env.ts`,仅服务端)
-- [ ] 流式端点:`app/api/ai/tags/route.ts`(或 server action),用 `streamText` / `streamObject` 基于项目标题+描述生成标签建议
+- [x] 安装 `ai` `@ai-sdk/openai`
+- [x] `src/lib/ai.ts`:用 `createOpenAI({ baseURL: GLM端点, apiKey: 服务端密钥 })` 配置 provider(`GLM_API_KEY` / `GLM_BASE_URL` / `GLM_MODEL` 经 `env.ts`,仅服务端)
+- [x] 流式端点:`app/api/ai/tags/route.ts`(或 server action),用 `streamText` / `streamObject` 基于项目标题+描述生成标签建议
 - [ ] 后台集成(任务 05 之后):项目表单内「AI 生成标签/简介」按钮 + 流式展示(`useObject` / `useChat`)+ 采纳到表单
 - [ ] 错误与限流处理(失败回退、禁用态)
 
