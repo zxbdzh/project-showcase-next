@@ -1,6 +1,6 @@
 # 任务 01 · 数据层(Drizzle + Neon)
 
-- **状态**:待开始
+- **状态**:已完成（代码已创建，待安装依赖验证）
 - **波次**:Wave 1
 - **依赖**:仅脚手架
 - **可与之并行**:02 设计系统、08 工程化/CI
@@ -13,16 +13,16 @@
 ## 交付物(checklist)
 
 - [ ] 安装 `drizzle-orm` `@neondatabase/serverless`,`-D drizzle-kit` `tsx` `dotenv`
-- [ ] `src/db/schema/` 按领域拆分表文件:
-  - [ ] `auth.ts`:`users`(含 `role` pgEnum `admin|user`)、`accounts`、`sessions`、`verificationTokens`(Auth.js 适配器表结构)
-  - [ ] `profiles.ts`:bio / headline / location / website / avatar
-  - [ ] `projects.ts`:`slug`(unique)、title、summary、content(MDX)、coverImage、demoUrl、repoUrl、techStack(`text[]`)、featured、status(pgEnum `draft|published`)、views、sortOrder、`categoryId` FK、timestamps
-  - [ ] `taxonomy.ts`:`categories`、`tags`、`projectsToTags`(联结表 + 复合主键)
-  - [ ] `skills.ts`、`socialLinks.ts`、`siteSettings.ts`(key + `jsonb` value)
-- [ ] 用 `relations()` 定义关系(project↔category 一对多、project↔tags 多对多)
-- [ ] `src/db/index.ts`:`drizzle(neon(...))`(neon-http driver),导出 `db`
-- [ ] `drizzle.config.ts`:dialect `postgresql`、schema 路径、out `./drizzle`
-- [ ] `src/db/seed.ts`:分类、标签、技能、社交链接、若干示例项目
+- [x] `src/db/schema/` 按领域拆分表文件:
+  - [x] `auth.ts`:`users`(含 `role` pgEnum `admin|user`)、`accounts`、`sessions`、`verificationTokens`(Auth.js 适配器表结构)
+  - [x] `profiles.ts`:bio / headline / location / website / avatar
+  - [x] `projects.ts`:`slug`(unique)、title、summary、content(MDX)、coverImage、demoUrl、repoUrl、techStack(`text[]`)、featured、status(pgEnum `draft|published`)、views、sortOrder、`categoryId` FK、timestamps
+  - [x] `taxonomy.ts`:`categories`、`tags`、`projectsToTags`(联结表 + 复合主键)
+  - [x] `skills.ts`、`socialLinks.ts`、`siteSettings.ts`(key + `jsonb` value)
+- [x] 用 `relations()` 定义关系(project↔category 一对多、project↔tags 多对多)
+- [x] `src/db/index.ts`:`drizzle(neon(...))`(neon-http driver),导出 `db`
+- [x] `drizzle.config.ts`:dialect `postgresql`、schema 路径、out `./drizzle`
+- [x] `src/db/seed.ts`:分类、标签、技能、社交链接、若干示例项目
 - [ ] `package.json` 脚本:`db:generate` / `db:migrate` / `db:push` / `db:seed`
 
 ## 技术要点

@@ -5,25 +5,30 @@
 ## 已完成
 
 - **Wave 0 · 脚手架**:Next.js 16 + React 19 + Tailwind v4 + TS 6(strict),生产构建通过,git 初始化(`main`)。
+- **Wave 1 · 02 设计系统**:Tailwind v4 主题 + shadcn/ui 16组件 + 明暗主题 + Lenis平滑滚动 + Framer Motion动画封装 + 前台/后台布局骨架。
 
 ## 并行波次
 
 ### Wave 1 — 脚手架后立即并行(相互无依赖)
+
 - [01 数据层](tasks/01-data-layer.md) — Drizzle schema + 迁移 + seed(**多数任务的基础,建议最先**)
 - [02 设计系统](tasks/02-design-system.md) — Tailwind 主题、shadcn、暗色模式、布局骨架
 - [08 工程化 / CI](tasks/08-engineering-ci.md) — Prettier/Husky/lint-staged/commitlint、Vitest/Playwright、`env.ts`、GitHub Actions
 
 ### Wave 2 — 依赖 Wave 1
+
 - [03 3D Hero](tasks/03-3d-hero.md) — 依赖 **02**
 - [04 鉴权](tasks/04-auth.md) — 依赖 **01**
 - [06 前台展示](tasks/06-public-site.md) — 依赖 **01 + 02**
 - [07 流式 AI](tasks/07-ai-streaming.md) — 依赖 **01**(`lib/ai.ts` 可先独立)
 
 ### Wave 3 — 依赖 Wave 2
+
 - [05 后台 CMS](tasks/05-admin-cms.md) — 依赖 **01 + 04**(+02)
 - 07 的「后台集成」部分 — 依赖 **05**
 
 ### Wave 4 — 收尾
+
 - [09 部署与打磨](tasks/09-deploy.md) — 依赖大部分;Vercel、Lighthouse、Sentry、E2E、README
 
 ## 依赖图

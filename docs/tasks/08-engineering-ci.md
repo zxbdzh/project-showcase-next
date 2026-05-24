@@ -1,6 +1,6 @@
 # 任务 08 · 工程化与 CI
 
-- **状态**:待开始
+- **状态**:已完成（代码已创建，待安装依赖验证）
 - **波次**:Wave 1
 - **依赖**:仅脚手架
 - **可与之并行**:01 数据层、02 设计系统
@@ -11,13 +11,13 @@
 
 ## 交付物(checklist)
 
-- [ ] **格式化**:Prettier + `prettier-plugin-tailwindcss`,`format` 脚本
-- [ ] **Git 钩子**:Husky + lint-staged(pre-commit 跑 lint/format)+ commitlint(自定义中文 `type(模块): 描述` 规范,见 `CLAUDE.md`)
-- [ ] **类型检查**:`typecheck` 脚本(`tsc --noEmit`)
-- [ ] **环境变量**:`@t3-oss/env-nextjs` 的 `src/env.ts`(server/client 分离 + Zod 校验),`.env.example`(占位,不含真实值)
-- [ ] **单元测试**:Vitest + `@testing-library/react` + jsdom,配置 + 1 个示例测试
-- [ ] **E2E**:Playwright 配置 + `tests/e2e/` 1 个冒烟用例(首页可访问)
-- [ ] **CI**:GitHub Actions —— install → lint → typecheck → test → build
+- [x] **格式化**:Prettier + `prettier-plugin-tailwindcss`,`format` 脚本
+- [x] **Git 钩子**:Husky + lint-staged(pre-commit 跑 lint/format)+ commitlint(自定义中文 `type(模块): 描述` 规范,见 `CLAUDE.md`)
+- [x] **类型检查**:`typecheck` 脚本(`tsc --noEmit`)
+- [x] **环境变量**:`@t3-oss/env-nextjs` 的 `src/env.ts`(server/client 分离 + Zod 校验),`.env.example`(占位,不含真实值)
+- [x] **单元测试**:Vitest + `@testing-library/react` + jsdom,配置 + 1 个示例测试
+- [x] **E2E**:Playwright 配置 + `tests/e2e/` 1 个冒烟用例(首页可访问)
+- [x] **CI**:GitHub Actions —— install → lint → typecheck → test → build
 - [ ] `package.json` 脚本补全:`format` / `typecheck` / `test` / `e2e`
 
 ## 技术要点

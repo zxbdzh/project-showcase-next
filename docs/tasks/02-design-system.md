@@ -1,6 +1,6 @@
 # 任务 02 · 设计系统与布局骨架(Apple 风)
 
-- **状态**:待开始
+- **状态**:已完成
 - **波次**:Wave 1
 - **依赖**:仅脚手架
 - **可与之并行**:01 数据层、08 工程化/CI
@@ -13,16 +13,16 @@
 
 ## 交付物(checklist)
 
-- [ ] `shadcn` 初始化,加入基础组件:button、input、textarea、label、dialog、dropdown-menu、card、table、form、sonner(toast)、badge、tabs、select、skeleton
-- [ ] Tailwind v4 CSS-first 主题:全局 CSS 用 `@theme` 定义 token,**严格对齐 design-system.md 的色板 / 字体 / 圆角**(中性色 + 苹果蓝强调,无霓虹)
-- [ ] 字体:`next/font` 接入 **Inter**;CSS 字体栈优先 `-apple-system, "SF Pro Display", Inter, ...`;标题紧字距 `-0.02em`
-- [ ] 明暗主题:`next-themes`(`ThemeProvider` + 切换组件,默认跟随系统,SSR 无闪烁)
-- [ ] **平滑滚动**:接入 **Lenis**(根布局初始化;`prefers-reduced-motion` 时禁用)
-- [ ] **动画封装** `components/motion/`:基于 Framer Motion 封装 `FadeIn` / `Stagger` / `Parallax`(统一用苹果缓动 `cubic-bezier(0.16,1,0.3,1)`,仅 transform/opacity)
-- [ ] 路由分组布局:
-  - [ ] `app/(marketing)/layout.tsx`:Apple 风响应式导航(细顶栏 + 毛玻璃)+ 页脚
-  - [ ] `app/(admin)/admin/layout.tsx`:侧边栏 + 顶栏(鉴权在任务 04 接入)
-- [ ] 共享组件 `components/shared/`:导航、页脚、主题切换、容器(`max-w` 统一)
+- [x] `shadcn` 初始化,加入基础组件:button、input、textarea、label、dialog、dropdown-menu、card、table、form、sonner(toast)、badge、tabs、select、skeleton
+- [x] Tailwind v4 CSS-first 主题:全局 CSS 用 `@theme` 定义 token,**严格对齐 design-system.md 的色板 / 字体 / 圆角**(中性色 + 苹果蓝强调,无霓虹)
+- [x] 字体:`next/font` 接入 **Inter**;CSS 字体栈优先 `-apple-system, "SF Pro Display", Inter, ...`;标题紧字距 `-0.02em`
+- [x] 明暗主题:`next-themes`(`ThemeProvider` + 切换组件,默认跟随系统,SSR 无闪烁)
+- [x] **平滑滚动**:接入 **Lenis**(根布局初始化;`prefers-reduced-motion` 时禁用)
+- [x] **动画封装** `components/motion/`:基于 Framer Motion 封装 `FadeIn` / `Stagger` / `Parallax`(统一用苹果缓动 `cubic-bezier(0.16,1,0.3,1)`,仅 transform/opacity)
+- [x] 路由分组布局:
+  - [x] `app/(marketing)/layout.tsx`:Apple 风响应式导航(细顶栏 + 毛玻璃)+ 页脚
+  - [x] `app/(admin)/admin/layout.tsx`:侧边栏 + 顶栏(鉴权在任务 04 接入)
+- [x] 共享组件 `components/shared/`:导航、页脚、主题切换、容器(`max-w` 统一)
 
 ## 技术要点
 

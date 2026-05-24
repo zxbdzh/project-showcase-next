@@ -19,24 +19,34 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - `pnpm build` — 生产构建(Turbopack)
 - `pnpm start` — 运行构建产物
 - `pnpm lint` — ESLint
-
-> 以下命令将由后续任务补充,补上后请更新本节:`typecheck`、`test`(Vitest)、`e2e`(Playwright)、`db:generate` / `db:migrate` / `db:push` / `db:seed`(drizzle-kit)。
+- `pnpm format` — Prettier 格式化
+- `pnpm format:check` — 检查格式
+- `pnpm typecheck` — TypeScript 类型检查
+- `pnpm test` — 单元测试(Vitest)
+- `pnpm test:ui` — 测试 UI
+- `pnpm test:coverage` — 测试覆盖率
+- `pnpm e2e` — E2E 测试(Playwright)
+- `pnpm e2e:ui` — E2E 测试 UI
+- `pnpm db:generate` — 生成数据库迁移
+- `pnpm db:migrate` — 运行数据库迁移
+- `pnpm db:push` — 推送数据库 schema
+- `pnpm db:seed` — 填充示例数据
 
 ## 技术栈
 
-| 层 | 选型 |
-|---|---|
-| 框架 | Next.js 16(App Router / RSC / Server Actions / `cacheComponents` PPR / Turbopack)、React 19 |
-| 语言 | TypeScript strict |
-| 环境变量 | `@t3-oss/env-nextjs` + Zod(server/client 分离) |
-| UI | Tailwind v4 + shadcn/ui + Framer Motion + Lenis(平滑滚动)+ `lucide-react` + `next-themes` |
-| 3D | `@react-three/fiber` + `@react-three/drei` + `@react-three/postprocessing` |
-| 数据库 | Neon(Serverless Postgres)+ Drizzle ORM + drizzle-kit |
-| 鉴权 | Auth.js v5(`next-auth@beta`)+ `@auth/drizzle-adapter` + GitHub OAuth + RBAC |
-| 校验/表单 | Zod + React Hook Form |
-| 存储 | Cloudflare R2(S3 兼容)+ 服务端预签名 |
-| AI | Vercel AI SDK(`ai` + `@ai-sdk/openai` 指向 GLM 兼容端点),流式 |
-| 测试 | Vitest + Testing Library + Playwright |
+| 层        | 选型                                                                                        |
+| --------- | ------------------------------------------------------------------------------------------- |
+| 框架      | Next.js 16(App Router / RSC / Server Actions / `cacheComponents` PPR / Turbopack)、React 19 |
+| 语言      | TypeScript strict                                                                           |
+| 环境变量  | `@t3-oss/env-nextjs` + Zod(server/client 分离)                                              |
+| UI        | Tailwind v4 + shadcn/ui + Framer Motion + Lenis(平滑滚动)+ `lucide-react` + `next-themes`   |
+| 3D        | `@react-three/fiber` + `@react-three/drei` + `@react-three/postprocessing`                  |
+| 数据库    | Neon(Serverless Postgres)+ Drizzle ORM + drizzle-kit                                        |
+| 鉴权      | Auth.js v5(`next-auth@beta`)+ `@auth/drizzle-adapter` + GitHub OAuth + RBAC                 |
+| 校验/表单 | Zod + React Hook Form                                                                       |
+| 存储      | Cloudflare R2(S3 兼容)+ 服务端预签名                                                        |
+| AI        | Vercel AI SDK(`ai` + `@ai-sdk/openai` 指向 GLM 兼容端点),流式                               |
+| 测试      | Vitest + Testing Library + Playwright                                                       |
 
 ## 设计基调(Apple 风)
 
@@ -63,16 +73,16 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 本项目相关 Skills(命中场景时主动调用)
 
-| 场景 | Skill |
-|---|---|
-| 写 / 审查 R3F、Three.js 3D 代码 | `r3f-best-practices`、`threejs-graphics-optimizer` |
-| 写 / 审查 React、Next.js 代码与性能 | `vercel-react-best-practices` |
-| UI / 组件设计与实现 | `ui-ux-pro-max` |
-| UI 代码审查 / 可访问性 | `web-design-guidelines` |
-| 本地启动并测试 Web 功能 | `webapp-testing` |
-| 审查改动找 bug | `code-review` |
-| 安全审查(密钥 / Server Action) | `security-review` |
-| 验证某改动是否真的生效 | `verify` |
+| 场景                                | Skill                                              |
+| ----------------------------------- | -------------------------------------------------- |
+| 写 / 审查 R3F、Three.js 3D 代码     | `r3f-best-practices`、`threejs-graphics-optimizer` |
+| 写 / 审查 React、Next.js 代码与性能 | `vercel-react-best-practices`                      |
+| UI / 组件设计与实现                 | `ui-ux-pro-max`                                    |
+| UI 代码审查 / 可访问性              | `web-design-guidelines`                            |
+| 本地启动并测试 Web 功能             | `webapp-testing`                                   |
+| 审查改动找 bug                      | `code-review`                                      |
+| 安全审查(密钥 / Server Action)      | `security-review`                                  |
+| 验证某改动是否真的生效              | `verify`                                           |
 
 ## 协作约定
 
