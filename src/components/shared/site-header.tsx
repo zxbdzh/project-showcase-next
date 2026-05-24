@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Container } from "./container";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { buttonVariants } from "@/components/ui/button";
+import { auth } from "@/lib/auth";
 
 const navItems = [
   { href: "/projects", label: "作品" },
@@ -9,7 +10,9 @@ const navItems = [
   { href: "/contact", label: "联系" },
 ];
 
-export function SiteHeader() {
+export async function SiteHeader() {
+  const session = await auth();
+
   return (
     <header className="border-border/60 bg-background/70 sticky top-0 z-40 w-full border-b backdrop-blur-xl">
       <Container className="flex h-14 items-center justify-between">
@@ -29,12 +32,25 @@ export function SiteHeader() {
         </nav>
         <div className="flex items-center gap-1.5">
           <ThemeToggle />
-          <Link
-            href="/contact"
-            className={buttonVariants({ size: "sm", className: "rounded-full px-4" })}
-          >
-            合作
-          </Link>
+          {session?.user ? (
+            <Link
+              href="/admin"
+              className={buttonVariants({
+                variant: "ghost",
+                size: "sm",
+                className: "rounded-full px-4",
+              })}
+            >
+              后台
+            </Link>
+          ) : (
+            <Link
+              href="/contact"
+              className={buttonVariants({ size: "sm", className: "rounded-full px-4" })}
+            >
+              合作
+            </Link>
+          )}
         </div>
       </Container>
     </header>

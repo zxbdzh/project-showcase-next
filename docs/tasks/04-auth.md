@@ -1,6 +1,6 @@
 # 任务 04 · 鉴权与 RBAC(Auth.js v5)
 
-- **状态**:待开始
+- **状态**:已完成
 - **波次**:Wave 2
 - **依赖**:01 数据层(`users` / `accounts` / `sessions` 表)
 - **可与之并行**:03 3D Hero、06 前台、07 AI
@@ -12,15 +12,15 @@
 
 ## 交付物(checklist)
 
-- [ ] 安装 `next-auth@beta` `@auth/drizzle-adapter`
-- [ ] `src/lib/auth.ts`:`NextAuth({...})` 导出 `handlers` / `auth` / `signIn` / `signOut`
-  - [ ] DrizzleAdapter 接入任务 01 的 auth 表
-  - [ ] GitHub provider
-  - [ ] `session` / `jwt` callback 注入 `user.role`
-- [ ] `app/api/auth/[...nextauth]/route.ts`
-- [ ] `app/(admin)/admin/layout.tsx` 内 `auth()` 校验:未登录 → 登录页;`role !== 'admin'` → 拒绝/首页
-- [ ] 登录页 / 登录按钮 + 用户菜单(登出)
-- [ ] (可选)`middleware.ts` 做边缘层快速拦截
+- [x] 安装 `next-auth@beta` `@auth/drizzle-adapter`
+- [x] `src/lib/auth.ts`:`NextAuth({...})` 导出 `handlers` / `auth` / `signIn` / `signOut`
+  - [x] DrizzleAdapter 接入任务 01 的 auth 表
+  - [x] GitHub provider
+  - [x] `session` / `jwt` callback 注入 `user.role`
+- [x] `app/api/auth/[...nextauth]/route.ts`
+- [x] `app/(admin)/admin/layout.tsx` 内 `auth()` 校验:未登录 → 登录页;`role !== 'admin'` → 拒绝/首页
+- [x] 登录页 / 登录按钮 + 用户菜单(登出)
+- [x] (可选)`middleware.ts` 做边缘层快速拦截
 
 ## 技术要点
 

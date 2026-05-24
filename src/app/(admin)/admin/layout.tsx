@@ -1,5 +1,9 @@
 import type { ReactNode } from "react";
 import Link from "next/link";
+import { redirect } from "next/navigation";
+import { auth, signOut } from "@/lib/auth";
+import { Button } from "@/components/ui/button";
+import { LogOut } from "lucide-react";
 
 const adminNav = [
   { href: "/admin", label: "概览" },
@@ -11,7 +15,17 @@ const adminNav = [
   { href: "/admin/settings", label: "站点设置" },
 ];
 
-export default function AdminLayout({ children }: { children: ReactNode }) {
+export default async function AdminLayout({ children }: { children: ReactNode }) {
+  const session = await auth();
+
+  if (!session?.user) {
+    redirect("/login");
+  }
+
+  if (session.user.role !== "admin") {
+    redirect("/");
+  }
+
   return (
     <div className="flex min-h-screen flex-1">
       <aside className="border-border/60 hidden w-60 shrink-0 border-r p-4 md:block">
@@ -33,6 +47,21 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
       <div className="flex flex-1 flex-col">
         <header className="border-border/60 flex h-14 items-center justify-between border-b px-6">
           <span className="text-muted-foreground text-sm">后台管理</span>
+          <div className="flex items-center gap-3">
+            <span className="text-muted-foreground text-xs">
+              {session.user.name ?? session.user.email}
+            </span>
+            <form
+              action={async () => {
+                "use server";
+                await signOut({ redirectTo: "/" });
+              }}
+            >
+              <Button type="submit" variant="ghost" size="icon-sm">
+                <LogOut className="size-4" />
+              </Button>
+            </form>
+          </div>
         </header>
         <main className="flex-1 p-6">{children}</main>
       </div>
