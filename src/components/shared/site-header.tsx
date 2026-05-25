@@ -16,8 +16,9 @@ export async function SiteHeader() {
   return (
     <header className="border-border/60 bg-background/70 sticky top-0 z-40 w-full border-b backdrop-blur-xl">
       <Container className="flex h-14 items-center justify-between">
-        <Link href="/" className="text-base font-semibold tracking-tight">
-          名字<span className="text-brand">.dev</span>
+        <Link href="/" className="font-mono text-base font-semibold tracking-tight">
+          <span className="text-muted-foreground">~/</span>zxb
+          <span className="text-brand"> $</span>
         </Link>
         <nav className="text-muted-foreground hidden items-center gap-8 text-sm md:flex">
           {navItems.map((item) => (

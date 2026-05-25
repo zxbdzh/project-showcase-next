@@ -1,21 +1,31 @@
 import Link from "next/link";
 import { Container } from "./container";
 
+const links = [
+  { href: "https://github.com/zxbdzh", label: "GitHub", external: true },
+  { href: "/projects", label: "作品" },
+  { href: "/contact", label: "联系" },
+];
+
 export function SiteFooter() {
   return (
     <footer className="border-border/60 text-muted-foreground border-t py-12 text-sm">
       <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
-        <p>© {new Date().getFullYear()} 名字. 用 Next.js 构建.</p>
+        <p className="font-mono text-xs">
+          <span className="text-muted-foreground/60 select-none">{"// "}</span>©{" "}
+          {new Date().getFullYear()} zxb · built with Next.js
+        </p>
         <div className="flex items-center gap-6">
-          <Link href="https://github.com" className="hover:text-foreground transition-colors">
-            GitHub
-          </Link>
-          <Link href="/projects" className="hover:text-foreground transition-colors">
-            作品
-          </Link>
-          <Link href="/contact" className="hover:text-foreground transition-colors">
-            联系
-          </Link>
+          {links.map((l) => (
+            <Link
+              key={l.href}
+              href={l.href}
+              {...(l.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+              className="hover:text-foreground transition-colors"
+            >
+              {l.label}
+            </Link>
+          ))}
         </div>
       </Container>
     </footer>

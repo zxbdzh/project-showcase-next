@@ -14,11 +14,7 @@ type Seg = { t: ReactNode; em?: boolean } | { br: true };
 /** greeting 进入即显示,其余随滚动逐句揭示 */
 const greeting: ReactNode = (
   <>
-    你好,我叫{" "}
-    <span className="from-brand bg-gradient-to-r to-violet-500 bg-clip-text text-transparent">
-      zxb
-    </span>
-    。
+    你好,我叫 <span className="text-brand">zxb</span>。
   </>
 );
 

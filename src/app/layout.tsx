@@ -27,12 +27,28 @@ const notoSansSC = Noto_Sans_SC({
   preload: false,
 });
 
+const siteUrl = process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
 export const metadata: Metadata = {
+  metadataBase: new URL(siteUrl),
   title: {
-    default: "Java 全栈工程师 · 作品集",
-    template: "%s · Java 全栈工程师作品集",
+    default: "zxb · Java 全栈开发者",
+    template: "%s · zxb",
   },
-  description: "Java 全栈开发者的项目作品集与技术展示。",
+  description:
+    "zxb 的作品集 —— Java 为主的全栈开发者,Spring Boot 后端、TypeScript 前端,覆盖 Web 全栈、跨端小程序与桌面应用,端到端类型安全。",
+  authors: [{ name: "zxb", url: "https://github.com/zxbdzh" }],
+  creator: "zxb",
+  openGraph: {
+    type: "website",
+    locale: "zh_CN",
+    siteName: "zxb · 作品集",
+    title: "zxb · Java 全栈开发者",
+    description: "Java 全栈 · 跨端 · 桌面端 · AI 应用 —— 端到端类型安全的作品集。",
+  },
+  twitter: {
+    card: "summary_large_image",
+  },
 };
 
 export default function RootLayout({
