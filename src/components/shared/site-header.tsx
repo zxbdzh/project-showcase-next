@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Container } from "./container";
 import { ThemeToggle } from "@/components/theme-toggle";
+import { CommandMenuButton } from "@/components/command-palette";
 import { buttonVariants } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 
@@ -32,6 +33,7 @@ export async function SiteHeader() {
           ))}
         </nav>
         <div className="flex items-center gap-1.5">
+          <CommandMenuButton />
           <ThemeToggle />
           {session?.user ? (
             <Link

@@ -4,6 +4,7 @@ import "./globals.css";
 import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Toaster } from "@/components/ui/sonner";
+import { CommandPalette } from "@/components/command-palette";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -70,6 +71,7 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <SmoothScroll>{children}</SmoothScroll>
+          <CommandPalette />
           <Toaster />
         </ThemeProvider>
       </body>
