@@ -14,6 +14,7 @@ import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 import { projectFormSchema, type ProjectFormValues } from "../schema";
 import { createProject, updateProject } from "../actions";
+import { generateSlug, generateTaxonomy } from "../ai-actions";
 
 type Option = { id: string; name: string };
 
@@ -34,17 +35,19 @@ export function ProjectForm({
   categories,
   tags,
   uploadEnabled,
-  readOnly = false,
 }: {
   projectId?: string;
   defaultValues: ProjectFormValues;
   categories: Option[];
   tags: Option[];
   uploadEnabled: boolean;
-  readOnly?: boolean;
 }) {
   const router = useRouter();
   const [techInput, setTechInput] = useState("");
+  const [tagOptions, setTagOptions] = useState<Option[]>(tags);
+  const [categoryOptions, setCategoryOptions] = useState<Option[]>(categories);
+  const [slugAiLoading, setSlugAiLoading] = useState(false);
+  const [taxLoading, setTaxLoading] = useState(false);
   const {
     register,
     handleSubmit,
@@ -82,6 +85,57 @@ export function ProjectForm({
     setValue("tagIds", next, { shouldDirty: true });
   }
 
+  async function handleAiSlug() {
+    const title = getValues("title").trim();
+    if (!title) {
+      toast.warning("请先填写标题");
+      return;
+    }
+    setSlugAiLoading(true);
+    const res = await generateSlug(title);
+    setSlugAiLoading(false);
+    if (res.ok) {
+      setValue("slug", res.data.slug, { shouldValidate: true, shouldDirty: true });
+      toast.success("已生成 slug");
+    } else {
+      toast.error(res.error);
+    }
+  }
+
+  async function handleAiTaxonomy() {
+    const content = getValues("content").trim();
+    if (content.length < 20) {
+      toast.warning("请先填写正文内容再分析");
+      return;
+    }
+    setTaxLoading(true);
+    const res = await generateTaxonomy(content);
+    setTaxLoading(false);
+    if (!res.ok) {
+      toast.error(res.error);
+      return;
+    }
+    const newTags = res.data.tags;
+    setTagOptions((prev) => {
+      const map = new Map(prev.map((o) => [o.id, o]));
+      for (const t of newTags) map.set(t.id, t);
+      return [...map.values()];
+    });
+    const merged = Array.from(new Set([...getValues("tagIds"), ...newTags.map((t) => t.id)]));
+    setValue("tagIds", merged, { shouldDirty: true });
+
+    const cat = res.data.category;
+    if (cat) {
+      setCategoryOptions((prev) => (prev.some((o) => o.id === cat.id) ? prev : [...prev, cat]));
+      setValue("categoryId", cat.id, { shouldDirty: true });
+    }
+
+    const parts: string[] = [];
+    if (newTags.length) parts.push(`${newTags.length} 个标签`);
+    if (cat) parts.push(`分类「${cat.name}」`);
+    toast.success(parts.length ? `已生成 ${parts.join("、")}` : "未识别到标签或分类");
+  }
+
   const onSubmit = handleSubmit(async (values) => {
     const res = projectId ? await updateProject(projectId, values) : await createProject(values);
     if (res.ok) {
@@ -100,7 +154,7 @@ export function ProjectForm({
 
   return (
     <form onSubmit={onSubmit} className="max-w-2xl space-y-5">
-      <fieldset disabled={readOnly} className="contents">
+      <fieldset className="contents">
         <Field label="标题" htmlFor="title" required error={errors.title?.message}>
           <Input id="title" {...register("title")} />
         </Field>
@@ -123,6 +177,15 @@ export function ProjectForm({
               }
             >
               从标题生成
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleAiSlug}
+              disabled={slugAiLoading}
+            >
+              {slugAiLoading ? "生成中…" : "AI 生成"}
             </Button>
           </div>
         </Field>
@@ -190,10 +253,10 @@ export function ProjectForm({
           </div>
         </Field>
 
-        {tags.length > 0 && (
-          <Field label="标签">
-            <div className="flex flex-wrap gap-1.5">
-              {tags.map((tag) => {
+        <Field label="标签" hint="AI 会分析正文,生成标签与分类并自动选中(新标签 / 分类会即时入库)">
+          <div className="space-y-2">
+            <div className="flex flex-wrap items-center gap-1.5">
+              {tagOptions.map((tag) => {
                 const active = tagIds.includes(tag.id);
                 return (
                   <button
@@ -211,20 +274,47 @@ export function ProjectForm({
                   </button>
                 );
               })}
+              {tagOptions.length === 0 && (
+                <span className="text-muted-foreground text-xs">
+                  暂无标签,可用下方 AI 分析正文生成
+                </span>
+              )}
             </div>
-          </Field>
-        )}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleAiTaxonomy}
+              disabled={taxLoading}
+            >
+              {taxLoading ? "分析中…" : "AI 分析正文 → 标签 / 分类"}
+            </Button>
+          </div>
+        </Field>
 
         <div className="grid gap-5 sm:grid-cols-3">
           <Field label="分类" htmlFor="categoryId">
-            <select id="categoryId" className={selectClass} {...register("categoryId")}>
-              <option value="">无分类</option>
-              {categories.map((c) => (
-                <option key={c.id} value={c.id}>
-                  {c.name}
-                </option>
-              ))}
-            </select>
+            <Controller
+              control={control}
+              name="categoryId"
+              render={({ field }) => (
+                <select
+                  id="categoryId"
+                  className={selectClass}
+                  value={field.value}
+                  onChange={field.onChange}
+                  onBlur={field.onBlur}
+                  ref={field.ref}
+                >
+                  <option value="">无分类</option>
+                  {categoryOptions.map((c) => (
+                    <option key={c.id} value={c.id}>
+                      {c.name}
+                    </option>
+                  ))}
+                </select>
+              )}
+            />
           </Field>
           <Field label="状态" htmlFor="status">
             <select id="status" className={selectClass} {...register("status")}>
@@ -252,11 +342,7 @@ export function ProjectForm({
       </fieldset>
 
       <div className="flex items-center gap-3 pt-2">
-        <Button
-          type="submit"
-          disabled={isSubmitting || readOnly}
-          title={readOnly ? "仅管理员可操作" : undefined}
-        >
+        <Button type="submit" disabled={isSubmitting}>
           {isSubmitting ? "保存中…" : projectId ? "保存修改" : "创建项目"}
         </Button>
         <Button type="button" variant="ghost" onClick={() => router.push("/admin/projects")}>
