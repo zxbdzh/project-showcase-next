@@ -63,6 +63,7 @@ export function ProjectRowActions({
       <Button
         variant="ghost"
         size="icon-sm"
+        nativeButton={false}
         render={<Link href={`/admin/projects/${id}`} />}
         aria-label="编辑"
       >
