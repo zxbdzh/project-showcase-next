@@ -1,0 +1,32 @@
+services:
+  app:
+    build:
+      context: .
+      target: runner
+      secrets:
+        - dotenv
+    image: project-showcase-next
+    container_name: project-showcase-next
+    env_file: .env
+    ports:
+      # 仅绑定回环,由宿主机 nginx 反代;如不用 nginx 可改为 "3000:3000"
+      - "127.0.0.1:3000:3000"
+    restart: unless-stopped
+
+  # 同步数据库结构 / 灌示例数据。不随 `up` 启动,手动执行:
+  #   docker compose run --rm migrate            # = pnpm db:push
+  #   docker compose run --rm migrate pnpm db:seed
+  migrate:
+    build:
+      context: .
+      target: tools
+      secrets:
+        - dotenv
+    image: project-showcase-next-tools
+    env_file: .env
+    profiles: ["tools"]
+    command: ["pnpm", "db:push"]
+
+secrets:
+  dotenv:
+    file: ./.env
