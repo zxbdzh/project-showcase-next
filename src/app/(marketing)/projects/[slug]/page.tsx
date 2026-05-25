@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Link as TransitionLink } from "next-view-transitions";
 import { notFound } from "next/navigation";
 import { ArrowUpRight, ArrowLeft, Eye } from "lucide-react";
 import { Container } from "@/components/shared/container";
@@ -47,12 +48,12 @@ export default async function ProjectDetailPage({ params }: Props) {
     <article className="py-24 sm:py-32">
       <Container className="max-w-[980px]">
         <FadeIn>
-          <Link
+          <TransitionLink
             href="/projects"
             className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-1 text-sm transition-colors"
           >
             <ArrowLeft className="size-4" /> 返回作品列表
-          </Link>
+          </TransitionLink>
         </FadeIn>
 
         <FadeIn>
@@ -123,6 +124,7 @@ export default async function ProjectDetailPage({ params }: Props) {
               <img
                 src={project.coverImage}
                 alt={project.title}
+                style={{ viewTransitionName: `project-cover-${slug}` }}
                 className="size-full object-cover"
               />
             </div>
@@ -144,21 +146,26 @@ export default async function ProjectDetailPage({ params }: Props) {
               <h2 className="text-2xl font-semibold tracking-tight">相关项目</h2>
               <div className="mt-8 grid gap-6 md:grid-cols-3">
                 {related.map((p) => (
-                  <Link
+                  <TransitionLink
                     key={p.id}
                     href={`/projects/${p.slug}`}
                     className="group border-border/60 bg-card block rounded-2xl border p-6 transition-shadow hover:shadow-lg"
                   >
                     {p.coverImage ? (
                       <div className="mb-4 aspect-video overflow-hidden rounded-xl">
-                        <img src={p.coverImage} alt={p.title} className="size-full object-cover" />
+                        <img
+                          src={p.coverImage}
+                          alt={p.title}
+                          style={{ viewTransitionName: `project-cover-${p.slug}` }}
+                          className="size-full object-cover"
+                        />
                       </div>
                     ) : (
                       <div className="bg-muted mb-4 aspect-video rounded-xl" />
                     )}
                     <h3 className="font-medium">{p.title}</h3>
                     <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{p.summary}</p>
-                  </Link>
+                  </TransitionLink>
                 ))}
               </div>
             </div>

@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Link from "next/link";
+import { Link } from "next-view-transitions";
 import { ArrowUpRight } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
@@ -65,6 +65,7 @@ export default async function ProjectsPage({ searchParams }: Props) {
                       <img
                         src={p.coverImage}
                         alt={p.title}
+                        style={{ viewTransitionName: `project-cover-${p.slug}` }}
                         className="size-full object-cover transition-transform group-hover:scale-[1.03]"
                       />
                     </div>

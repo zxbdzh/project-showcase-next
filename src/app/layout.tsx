@@ -5,6 +5,7 @@ import { ThemeProvider } from "@/components/theme-provider";
 import { SmoothScroll } from "@/components/smooth-scroll";
 import { Toaster } from "@/components/ui/sonner";
 import { CommandPalette } from "@/components/command-palette";
+import { ViewTransitions } from "next-view-transitions";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -58,23 +59,25 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="zh-CN"
-      suppressHydrationWarning
-      className={`${inter.variable} ${jetbrainsMono.variable} ${notoSansSC.variable} h-full`}
-    >
-      <body className="flex min-h-full flex-col antialiased">
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
-          <SmoothScroll>{children}</SmoothScroll>
-          <CommandPalette />
-          <Toaster />
-        </ThemeProvider>
-      </body>
-    </html>
+    <ViewTransitions>
+      <html
+        lang="zh-CN"
+        suppressHydrationWarning
+        className={`${inter.variable} ${jetbrainsMono.variable} ${notoSansSC.variable} h-full`}
+      >
+        <body className="flex min-h-full flex-col antialiased">
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <SmoothScroll>{children}</SmoothScroll>
+            <CommandPalette />
+            <Toaster />
+          </ThemeProvider>
+        </body>
+      </html>
+    </ViewTransitions>
   );
 }
