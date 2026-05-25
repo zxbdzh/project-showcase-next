@@ -116,10 +116,11 @@ const platformSimpleIconsMap: Record<string, { path: string; hex: string }> = {
 };
 
 const platformColors: Record<string, string> = {
-  github: "#181717",
-  twitter: "",
   discord: "#5865F2",
 };
+
+// 近黑的单色品牌(GitHub、X)在暗色模式下不可见,改用 currentColor 跟随主题前景色。
+const monochromePlatforms = new Set(["github", "twitter"]);
 
 export function SocialIcon({
   platform,
@@ -132,7 +133,9 @@ export function SocialIcon({
 
   const siData = platformSimpleIconsMap[key];
   if (siData) {
-    const color = platformColors[key] || `#${siData.hex}`;
+    const color = monochromePlatforms.has(key)
+      ? "currentColor"
+      : platformColors[key] || `#${siData.hex}`;
     return (
       <svg
         role="img"
