@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
 import { useReducedMotion } from "motion/react";
+import { GridBackdrop } from "@/components/terminal";
 
 type Line = { id: number; kind: "cmd" | "out"; content: ReactNode };
 
@@ -163,13 +164,9 @@ export function HeroTerminal() {
   };
 
   return (
-    <div className="border-border/60 from-brand-subtle/50 via-background to-background relative isolate overflow-hidden rounded-3xl border bg-gradient-to-br p-3 sm:p-4">
-      {/* 环境光晕背景 */}
-      <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
-        <div className="hero-orb-a bg-brand/25 absolute -top-1/4 left-1/6 size-2/3 rounded-full blur-3xl" />
-        <div className="hero-orb-b absolute top-1/4 right-1/6 size-1/2 rounded-full bg-indigo-400/20 blur-3xl" />
-        <div className="hero-orb-c absolute bottom-0 left-1/3 size-1/2 rounded-full bg-violet-400/15 blur-3xl" />
-      </div>
+    <div className="border-border bg-muted/30 relative isolate overflow-hidden rounded-lg border p-3 sm:p-4">
+      {/* 工程图纸网格底纹 */}
+      <GridBackdrop />
 
       <div className="border-border/60 bg-card/70 flex min-h-[20rem] flex-col rounded-2xl border backdrop-blur-md sm:min-h-[24rem]">
         {/* 标题栏 */}
@@ -204,7 +201,7 @@ export function HeroTerminal() {
             <p>
               <span className="text-muted-foreground">$ </span>
               <span className="text-foreground">{activeCmd}</span>
-              <span className="text-brand hero-caret ml-0.5 inline-block">▋</span>
+              <span className="text-brand terminal-caret ml-0.5 inline-block">▋</span>
             </p>
           )}
 

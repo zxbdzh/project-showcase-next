@@ -3,82 +3,86 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ===== Apple 风设计系统 · 品牌色 Indigo #4F46E5 ===== */
+/* ===== 终端 / 工程美学设计系统 ===== */
+/* 信号色:琥珀 amber · 中性:暖灰 stone · 母题:命令行 */
 /* 单一真相源见 docs/design-system.md */
 
 :root {
-  --radius: 0.75rem;
+  /* 方角母题:小圆角 */
+  --radius: 0.25rem;
 
-  /* 中性底 / 文字 */
-  --background: #ffffff;
-  --foreground: #1d1d1f;
+  /* 暖灰 stone 中性底 / 文字 */
+  --background: #fafaf9; /* stone-50 */
+  --foreground: #1c1917; /* stone-900 */
   --card: #ffffff;
-  --card-foreground: #1d1d1f;
+  --card-foreground: #1c1917;
   --popover: #ffffff;
-  --popover-foreground: #1d1d1f;
+  --popover-foreground: #1c1917;
 
-  /* 品牌色(Indigo)= primary */
-  --primary: #4f46e5;
+  /* 信号琥珀(亮底用 orange-700 保对比 ≥4.5:1)= primary */
+  --primary: #c2410c;
   --primary-foreground: #ffffff;
 
-  /* 次级 / 苹果浅灰段 */
-  --secondary: #f5f5f7;
-  --secondary-foreground: #1d1d1f;
-  --muted: #f5f5f7;
-  --muted-foreground: #6e6e73;
+  /* 次级 / 暖灰浅段 */
+  --secondary: #f5f5f4; /* stone-100 */
+  --secondary-foreground: #1c1917;
+  --muted: #f5f5f4;
+  --muted-foreground: #78716c; /* stone-500 */
 
-  /* 中性 hover 强调(shadcn accent 保持中性,品牌强调用 --brand) */
-  --accent: #f5f5f7;
-  --accent-foreground: #1d1d1f;
+  /* 中性 hover(强调用 --brand) */
+  --accent: #f5f5f4;
+  --accent-foreground: #1c1917;
 
-  --destructive: #ff3b30;
+  --destructive: #dc2626;
   --destructive-foreground: #ffffff;
 
-  --border: #e5e5ea;
-  --input: #e5e5ea;
-  --ring: #4f46e5;
+  --border: #e7e5e4; /* stone-200 */
+  --input: #e7e5e4;
+  --ring: #c2410c;
 
-  /* 品牌扩展 token(按钮/链接/进度/3D 折射) */
-  --brand: #4f46e5;
-  --brand-hover: #4338ca;
-  --brand-subtle: #eef2ff;
+  /* 品牌扩展 token(按钮/链接/光标/进度/高亮) */
+  --brand: #c2410c;
+  --brand-hover: #9a3412;
+  --brand-subtle: #ffedd5; /* orange-100 */
 
-  /* 字体:Mac/iOS 原生 SF Pro,其余 Inter(next/font 注入 --font-inter)兜底 */
+  /* 字体:西文 Inter + 中文 Noto Sans SC;母题等宽 JetBrains Mono(经 next/font 注入) */
   --font-sans:
-    -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", var(--font-inter),
-    system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-  --font-mono: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+    var(--font-inter), var(--font-noto-sans-sc), system-ui, "PingFang SC", "Microsoft YaHei",
+    "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-mono:
+    var(--font-jetbrains-mono), ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
 }
 
 .dark {
-  --background: #000000;
-  --foreground: #f5f5f7;
-  --card: #1c1c1e;
-  --card-foreground: #f5f5f7;
-  --popover: #1c1c1e;
-  --popover-foreground: #f5f5f7;
+  --background: #0c0a09; /* stone-950 近黑 */
+  --foreground: #fafaf9;
+  --card: #1c1917; /* stone-900 */
+  --card-foreground: #fafaf9;
+  --popover: #1c1917;
+  --popover-foreground: #fafaf9;
 
-  --primary: #818cf8;
-  --primary-foreground: #0b0b0f;
+  /* 暗底用更亮的 orange-400 */
+  --primary: #fb923c;
+  --primary-foreground: #1c1917;
 
-  --secondary: #1c1c1e;
-  --secondary-foreground: #f5f5f7;
-  --muted: #1c1c1e;
-  --muted-foreground: #a1a1a6;
+  --secondary: #1c1917;
+  --secondary-foreground: #fafaf9;
+  --muted: #1c1917;
+  --muted-foreground: #a8a29e; /* stone-400 */
 
-  --accent: #1c1c1e;
-  --accent-foreground: #f5f5f7;
+  --accent: #292524; /* stone-800 */
+  --accent-foreground: #fafaf9;
 
-  --destructive: #ff453a;
-  --destructive-foreground: #0b0b0f;
+  --destructive: #f87171;
+  --destructive-foreground: #1c1917;
 
-  --border: #2c2c2e;
-  --input: #2c2c2e;
-  --ring: #818cf8;
+  --border: #292524; /* stone-800 */
+  --input: #292524;
+  --ring: #fb923c;
 
-  --brand: #818cf8;
-  --brand-hover: #a5b4fc;
-  --brand-subtle: #1e1b4b;
+  --brand: #fb923c;
+  --brand-hover: #fdba74;
+  --brand-subtle: #2a1a0e; /* 深琥珀棕 */
 }
 
 @theme inline {
@@ -109,10 +113,10 @@
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  --radius-sm: calc(var(--radius) - 2px);
+  --radius-md: var(--radius);
+  --radius-lg: calc(var(--radius) + 2px);
+  --radius-xl: calc(var(--radius) + 6px);
 }
 
 @layer base {
@@ -126,11 +130,16 @@
     -webkit-font-smoothing: antialiased;
     text-rendering: optimizeLegibility;
   }
-  /* 苹果风:大标题紧字距 */
+  /* 终端美学:标题紧字距 */
   h1,
   h2,
   h3 {
     letter-spacing: -0.02em;
+  }
+  /* 选中态:琥珀信号色 */
+  ::selection {
+    background: var(--brand);
+    color: var(--primary-foreground);
   }
 }
 
@@ -146,45 +155,20 @@ html.lenis body {
   overflow: clip;
 }
 
-/* Hero 静态视觉:柔和浮动光晕 */
-@keyframes hero-float-a {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(6%, -8%, 0) scale(1.08);
-  }
+/* ===== 终端母题工具 ===== */
+
+/* 细网格底纹(GridBackdrop):替代浮动光球,工程图纸感 */
+.terminal-grid {
+  background-image:
+    linear-gradient(to right, var(--border) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--border) 1px, transparent 1px);
+  background-size: 2.5rem 2.5rem;
+  -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
+  mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 100%);
 }
-@keyframes hero-float-b {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(-7%, 6%, 0) scale(1.12);
-  }
-}
-@keyframes hero-float-c {
-  0%,
-  100% {
-    transform: translate3d(0, 0, 0) scale(1);
-  }
-  50% {
-    transform: translate3d(5%, 7%, 0) scale(0.92);
-  }
-}
-.hero-orb-a {
-  animation: hero-float-a 14s ease-in-out infinite;
-}
-.hero-orb-b {
-  animation: hero-float-b 18s ease-in-out infinite;
-}
-.hero-orb-c {
-  animation: hero-float-c 16s ease-in-out infinite;
-}
-/* Hero 终端卡:光标闪烁 */
-@keyframes hero-caret-blink {
+
+/* 终端光标:单处闪烁(母题核心,保留) */
+@keyframes terminal-caret-blink {
   0%,
   49% {
     opacity: 1;
@@ -194,10 +178,11 @@ html.lenis body {
     opacity: 0;
   }
 }
-.hero-caret {
-  animation: hero-caret-blink 1.1s steps(1) infinite;
+.terminal-caret {
+  animation: terminal-caret-blink 1.1s steps(1) infinite;
 }
-/* Hero 叙事:向下滚动提示轻微弹动 */
+
+/* 向下滚动提示:克制弹动(位移,非发光) */
 @keyframes hero-cue-bounce {
   0%,
   100% {
@@ -211,104 +196,28 @@ html.lenis body {
   animation: hero-cue-bounce 1.6s ease-in-out infinite;
 }
 
+/* ===== 项目卡片:方角 + 琥珀描边 hover(去发光) ===== */
+.project-card {
+  transition:
+    transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+    border-color 0.2s ease;
+}
+.project-card:hover {
+  transform: translateY(-2px);
+  border-color: var(--brand);
+}
+
+/* ===== 技能直方图填充:纯信号色(去紫渐变) ===== */
+.skill-bar-fill {
+  background: var(--brand);
+}
+
 @media (prefers-reduced-motion: reduce) {
-  .hero-orb-a,
-  .hero-orb-b,
-  .hero-orb-c,
-  .hero-caret,
+  .terminal-caret,
   .hero-cue {
     animation: none;
   }
-}
-
-/* ===== 项目卡片交互 ===== */
-.project-card {
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.04);
-}
-.project-card:hover {
-  box-shadow: 0 8px 30px rgb(0 0 0 / 0.08);
-  transform: translateY(-4px);
-  border-color: var(--brand);
-}
-.dark .project-card {
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.2);
-}
-.dark .project-card:hover {
-  box-shadow: 0 8px 30px rgb(0 0 0 / 0.4);
-}
-
-/* ===== 统计数字呼吸光晕 ===== */
-@keyframes stats-glow {
-  0%,
-  100% {
-    text-shadow: 0 0 0 transparent;
-  }
-  50% {
-    text-shadow: 0 0 20px var(--brand);
-  }
-}
-.stats-value {
-  animation: stats-glow 3s ease-in-out infinite;
-}
-
-/* ===== 技术栈 Pill hover ===== */
-.tech-pill {
-  cursor: default;
-}
-.tech-pill:hover {
-  border-color: var(--brand);
-  background: var(--brand-subtle);
-}
-
-/* ===== 技能进度条渐变 ===== */
-.skill-bar-fill {
-  background: linear-gradient(90deg, var(--brand), #a78bfa);
-}
-
-/* ===== 社交链接 hover 上浮 ===== */
-.social-link:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.06);
-}
-
-/* ===== CTA 按钮光晕脉冲 ===== */
-@keyframes cta-pulse {
-  0%,
-  100% {
-    box-shadow: 0 0 0 0 var(--brand);
-  }
-  50% {
-    box-shadow: 0 0 0 8px transparent;
-  }
-}
-.cta-glow {
-  animation: cta-pulse 2.4s ease-in-out infinite;
-}
-
-/* ===== 头像悬浮 ===== */
-@keyframes avatar-float {
-  0%,
-  100% {
-    transform: translateY(0);
-  }
-  50% {
-    transform: translateY(-6px);
-  }
-}
-.avatar-float {
-  animation: avatar-float 4s ease-in-out infinite;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .stats-value,
-  .cta-glow,
-  .avatar-float {
-    animation: none;
-  }
   .project-card:hover {
-    transform: none;
-  }
-  .social-link:hover {
     transform: none;
   }
 }
