@@ -12,6 +12,7 @@ import { AiChat } from "@/components/shared/ai-chat";
 import { CommentHeading } from "@/components/terminal";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
+import { getHeroConfig } from "@/features/hero/queries";
 
 const stats = [
   { value: 10, suffix: "+", label: "完整项目" },
@@ -20,12 +21,16 @@ const stats = [
 ];
 
 export default async function HomePage() {
-  const [featured, skills] = await Promise.all([getFeaturedProjects(3), getSkills()]);
+  const [featured, skills, hero] = await Promise.all([
+    getFeaturedProjects(3),
+    getSkills(),
+    getHeroConfig(),
+  ]);
 
   return (
     <>
       {/* ① Hero · 滚动驱动叙事开场 */}
-      <HeroIntro />
+      <HeroIntro intro={hero.intro} />
 
       {/* ② 交互式终端 · 技术力展示 */}
       <section className="pb-24 sm:pb-32">
@@ -34,7 +39,7 @@ export default async function HomePage() {
             <CommentHeading className="mb-4">interactive — 这次你来试试</CommentHeading>
           </FadeIn>
           <FadeIn delay={0.08}>
-            <HeroTerminal />
+            <HeroTerminal commands={hero.terminal.commands} />
           </FadeIn>
         </Container>
       </section>

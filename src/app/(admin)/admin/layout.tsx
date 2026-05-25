@@ -14,6 +14,7 @@ const adminNav = [
   { href: "/admin/skills", label: "技能" },
   { href: "/admin/social-links", label: "社交链接" },
   { href: "/admin/profile", label: "资料" },
+  { href: "/admin/hero", label: "首页 Hero" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {

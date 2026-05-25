@@ -1,113 +1,24 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { Link, useTransitionRouter } from "next-view-transitions";
+import { useCallback, useEffect, useMemo, useRef, useState, type ReactNode } from "react";
+import { useTransitionRouter } from "next-view-transitions";
 import { useInView, useReducedMotion } from "motion/react";
 import { GridBackdrop } from "@/components/terminal";
+import { TerminalOutput } from "@/features/hero/components/markup";
+import type { HeroCommand } from "@/features/hero/schema";
 
 type Line = { id: number; kind: "cmd" | "out"; content: ReactNode };
-
-/** 终端可点击命令(help 会列出全部) */
-const COMMANDS = ["help", "whoami", "skills", "projects", "about", "contact"] as const;
 
 /** 可经 `/route` 直接跳转的站内路由 */
 const ROUTES = new Set(["/", "/projects", "/about", "/contact"]);
 
-/** 输出里的站内路由提示:可点击跳转(走 View Transitions) */
-function RouteLink({ href, children }: { href: string; children: ReactNode }) {
-  return (
-    <Link href={href} className="text-brand decoration-brand/40 underline-offset-2 hover:underline">
-      {children}
-    </Link>
-  );
-}
-
-/** 命令输出:克制、真实,不含微信小程序(uni-app 跨端) */
-function output(cmd: string): ReactNode {
-  switch (cmd) {
-    case "help":
-      return (
-        <div className="text-muted-foreground">
-          <p className="text-foreground/90">可用命令:</p>
-          <p>{"  whoami    简介"}</p>
-          <p>{"  skills    技术栈"}</p>
-          <p>{"  projects  精选作品"}</p>
-          <p>{"  about     关于我"}</p>
-          <p>{"  contact   联系方式"}</p>
-          <p>{"  clear     清屏"}</p>
-        </div>
-      );
-    case "whoami":
-      return (
-        <div>
-          <p className="text-foreground">Java 全栈开发者 · 端到端类型安全</p>
-          <p className="text-brand">Java / TypeScript / Python</p>
-          <p className="text-muted-foreground">Spring Boot 后端 · Web 全栈 · 跨端 · 桌面端</p>
-          <p className="text-muted-foreground mt-1">
-            提示: 输入 <span className="text-foreground">help</span> 查看可用命令
-          </p>
-        </div>
-      );
-    case "skills":
-      return (
-        <p className="text-brand">
-          Java Spring Boot TypeScript React Next.js Drizzle uni-app Electron FastAPI Docker
-        </p>
-      );
-    case "projects":
-      return (
-        <div className="text-muted-foreground">
-          <p className="text-foreground/90">10+ 已上线项目,精选:</p>
-          <p>{"  · WordMiniApp     uni-app + Spring Boot 全栈背单词"}</p>
-          <p>{"  · clip-tool-next  Electron + FastAPI 直播切片工具"}</p>
-          <p>{"  · moyu            Electron + Three.js 桌面应用"}</p>
-          <p className="mt-1">
-            <RouteLink href="/projects">查看全部 → /projects</RouteLink>
-          </p>
-        </div>
-      );
-    case "about":
-      return (
-        <p className="text-muted-foreground">
-          习惯把复杂需求收敛成简洁、可上线、可维护的产品,把测试 / CI / Docker / 类型安全当工程底线。{" "}
-          <RouteLink href="/about">了解更多 → /about</RouteLink>
-        </p>
-      );
-    case "contact":
-      return (
-        <div className="text-muted-foreground">
-          <p>
-            {"GitHub   "}
-            <a
-              href="https://github.com/zxbdzh"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-brand decoration-brand/40 underline-offset-2 hover:underline"
-            >
-              github.com/zxbdzh
-            </a>
-          </p>
-          <p>合作 · 全职 · 技术交流均欢迎</p>
-          <p>
-            <RouteLink href="/contact">联系我 → /contact</RouteLink>
-          </p>
-        </div>
-      );
-    default:
-      return (
-        <p className="text-muted-foreground">
-          command not found: {cmd} — 输入 <span className="text-foreground">help</span> 查看可用命令
-        </p>
-      );
-  }
-}
-
 /**
- * Hero 交互终端:进入时逐字打出 whoami;支持点击预设命令与真实输入。
+ * Hero 交互终端:进入时逐字打出 help;支持点击预设命令与真实输入。
+ * 命令与输出取自后台配置(commands);help / clear 为内置。
  * 纯 DOM / CSS,无 WebGL;明暗双模式自适应。
- * prefers-reduced-motion 时跳过打字动画,命令即时落定(见 useReducedMotion 分支)。
+ * prefers-reduced-motion 时跳过打字动画,命令即时落定。
  */
-export function HeroTerminal() {
+export function HeroTerminal({ commands }: { commands: HeroCommand[] }) {
   const reduce = useReducedMotion();
   const router = useTransitionRouter();
   const [history, setHistory] = useState<Line[]>([]);
@@ -122,9 +33,36 @@ export function HeroTerminal() {
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
   const startedRef = useRef(false);
 
-  // 仅当终端滚动进入视口后才触发自动打字 —— 让用户看完上方滚动叙事再开场,
-  // 而非页面一加载就在屏幕外把动画播完(滚到这里只剩结果)。
+  const commandMap = useMemo(() => new Map(commands.map((c) => [c.name, c])), [commands]);
+  const buttonCmds = useMemo(() => ["help", ...commands.map((c) => c.name)], [commands]);
+
+  // 仅当终端滚动进入视口后才触发自动打字 —— 让用户看完上方滚动叙事再开场。
   const inView = useInView(rootRef, { once: true, margin: "-80px" });
+
+  /** 命令输出:help 由命令列表生成,其余查配置;未命中回 command not found */
+  const renderOutput = useCallback(
+    (cmd: string): ReactNode => {
+      if (cmd === "help") {
+        return (
+          <div className="text-muted-foreground">
+            <p className="text-foreground/90">可用命令:</p>
+            {commands.map((c) => (
+              <p key={c.name}>{`  ${c.name.padEnd(10)}${c.desc}`}</p>
+            ))}
+            <p>{"  clear     清屏"}</p>
+          </div>
+        );
+      }
+      const found = commandMap.get(cmd);
+      if (found) return <TerminalOutput text={found.output} />;
+      return (
+        <p className="text-muted-foreground">
+          command not found: {cmd} — 输入 <span className="text-foreground">help</span> 查看可用命令
+        </p>
+      );
+    },
+    [commands, commandMap]
+  );
 
   const commit = useCallback(
     (cmd: string) => {
@@ -155,10 +93,10 @@ export function HeroTerminal() {
       setHistory((h) => [
         ...h,
         { id: (idRef.current += 1), kind: "cmd", content: c },
-        { id: (idRef.current += 1), kind: "out", content: output(c) },
+        { id: (idRef.current += 1), kind: "out", content: renderOutput(c) },
       ]);
     },
-    [router]
+    [router, renderOutput]
   );
 
   // 逐字「打」出命令(自动入场 / 点击触发);用户手输则直接 commit
@@ -193,7 +131,6 @@ export function HeroTerminal() {
   );
 
   // 入场:进入视口后再自动打出 help(只触发一次)
-  // 用 help 而非 whoami —— 上方开机序列已 print whoami,这里改列命令以衔接「你来接管」
   useEffect(() => {
     if (!inView || startedRef.current) return;
     startedRef.current = true;
@@ -288,7 +225,7 @@ export function HeroTerminal() {
 
         {/* 可点击命令 */}
         <div className="border-border/50 flex flex-wrap gap-2 border-t px-4 py-2.5">
-          {COMMANDS.map((c) => (
+          {buttonCmds.map((c) => (
             <button
               key={c}
               type="button"

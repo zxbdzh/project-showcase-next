@@ -8,48 +8,26 @@ import { Container } from "@/components/shared/container";
 import { GridBackdrop, StatusDot } from "@/components/terminal";
 import { buttonVariants } from "@/components/ui/button";
 import { EASE_OUT_EXPO } from "@/lib/motion";
-
-/** 输出行片段:em 片段为品牌色高亮;br 为桌面端软换行 */
-type Seg = { t: ReactNode; em?: boolean } | { br: true };
+import { Highlighted } from "@/features/hero/components/markup";
+import type { HeroConfig } from "@/features/hero/schema";
 
 /** 开机脚本行:命令行(mono chrome)或输出行(sans 中文叙事) */
 type Row =
   | { kind: "cmd"; text: string }
-  | { kind: "out"; segs: Seg[]; tone?: "head" | "body" | "status" };
+  | { kind: "out"; text: string; tone: "head" | "body" | "status" };
 
-/**
- * 终端「开机序列」脚本。进入视口后自动逐行 print:命令 → 其输出。
- */
-const script: Row[] = [
-  { kind: "cmd", text: "whoami" },
-  { kind: "out", tone: "head", segs: [{ t: "你好,我叫 " }, { t: "zxb", em: true }, { t: "。" }] },
-  { kind: "cmd", text: "cat profile.txt" },
-  {
-    kind: "out",
-    segs: [{ t: "我是一名 " }, { t: "Java 为主的全栈开发者", em: true }, { t: "。" }],
-  },
-  {
-    kind: "out",
-    segs: [{ t: "主力用 " }, { t: "Java / Spring Boot", em: true }, { t: " 做后端," }],
-  },
-  {
-    kind: "out",
-    segs: [{ t: "也能用 " }, { t: "TypeScript / React", em: true }, { t: " 独立扛起前端。" }],
-  },
-  {
-    kind: "out",
-    segs: [
-      { t: "把 Web、小程序到桌面端的复杂需求," },
-      { br: true },
-      { t: "收敛成" },
-      { t: "会上线的产品", em: true },
-      { t: "。" },
-    ],
-  },
-  { kind: "cmd", text: "./status --availability" },
-  { kind: "out", tone: "status", segs: [{ t: "可参与合作 · Java 全栈 / 跨端 / AI 应用" }] },
-  { kind: "cmd", text: "open --work" },
-];
+/** 由后台配置拼出开机脚本;命令行为固定终端装饰,仅输出取自配置。 */
+function buildScript(intro: HeroConfig["intro"]): Row[] {
+  return [
+    { kind: "cmd", text: "whoami" },
+    { kind: "out", tone: "head", text: intro.greeting },
+    { kind: "cmd", text: "cat profile.txt" },
+    ...intro.lines.map((text): Row => ({ kind: "out", tone: "body", text })),
+    { kind: "cmd", text: "./status --availability" },
+    { kind: "out", tone: "status", text: intro.status },
+    { kind: "cmd", text: "open --work" },
+  ];
+}
 
 /** 逐行揭示节奏(ms):命令行前留更长停顿(阅读),输出行紧随其命令 print。整体偏舒缓 */
 const LEAD = 600;
@@ -57,31 +35,10 @@ const CMD_DELAY = 1150;
 const OUT_DELAY = 700;
 const CTA_DELAY = 800;
 
-function isBreak(s: Seg): s is { br: true } {
-  return "br" in s;
-}
-
 const headClass =
   "text-3xl leading-[1.22] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl";
 const bodyClass =
   "text-2xl leading-[1.3] font-semibold tracking-tight text-balance sm:text-4xl lg:text-5xl";
-
-function Segments({ segs }: { segs: Seg[] }) {
-  return (
-    <>
-      {segs.map((s, i) => {
-        if (isBreak(s)) return <br key={i} className="hidden sm:block" />;
-        if (s.em)
-          return (
-            <span key={i} className="text-brand">
-              {s.t}
-            </span>
-          );
-        return <span key={i}>{s.t}</span>;
-      })}
-    </>
-  );
-}
 
 /** 命令行内容:`$ cmd`,等宽 chrome */
 function CmdInner({ text, caret }: { text: string; caret?: ReactNode }) {
@@ -94,21 +51,21 @@ function CmdInner({ text, caret }: { text: string; caret?: ReactNode }) {
   );
 }
 
-/** 输出行内容:`>` 标记 + 中文 sans 叙事 */
+/** 输出行内容:`>` 标记 + 中文 sans 叙事;status 行用状态点 + mono */
 function OutInner({
-  segs,
+  text,
   tone,
   caret,
 }: {
-  segs: Seg[];
-  tone?: "head" | "body" | "status";
+  text: string;
+  tone: "head" | "body" | "status";
   caret?: ReactNode;
 }) {
   if (tone === "status") {
     return (
       <span className="text-muted-foreground inline-flex items-center gap-2 font-mono text-sm sm:text-base">
         <StatusDot tone="emerald" ping />
-        <Segments segs={segs} />
+        <Highlighted text={text} />
         {caret}
       </span>
     );
@@ -118,7 +75,7 @@ function OutInner({
       <span className="text-brand/60 mr-2 align-middle font-mono text-lg select-none sm:text-2xl">
         {">"}
       </span>
-      <Segments segs={segs} />
+      <Highlighted text={text} />
       {caret}
     </span>
   );
@@ -139,29 +96,34 @@ function BootRow({ row, visible, showCaret }: { row: Row; visible: boolean; show
       {row.kind === "cmd" ? (
         <CmdInner text={row.text} caret={caret} />
       ) : (
-        <OutInner segs={row.segs} tone={row.tone} caret={caret} />
+        <OutInner text={row.text} tone={row.tone} caret={caret} />
       )}
     </motion.div>
   );
 }
 
-const cta = (
-  <div className="flex flex-wrap items-center gap-3 pt-2">
-    <Link href="/projects" className={buttonVariants({ className: "group rounded-md px-5" })}>
-      查看作品
-      <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-    </Link>
-    <Link
-      href="/contact"
-      className={buttonVariants({ variant: "outline", className: "rounded-md px-5" })}
-    >
-      联系我
-    </Link>
-  </div>
-);
+function Cta({ intro }: { intro: HeroConfig["intro"] }) {
+  return (
+    <div className="flex flex-wrap items-center gap-3 pt-2">
+      <Link
+        href={intro.primaryCta.href}
+        className={buttonVariants({ className: "group rounded-md px-5" })}
+      >
+        {intro.primaryCta.label}
+        <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+      </Link>
+      <Link
+        href={intro.secondaryCta.href}
+        className={buttonVariants({ variant: "outline", className: "rounded-md px-5" })}
+      >
+        {intro.secondaryCta.label}
+      </Link>
+    </div>
+  );
+}
 
 /** 静态降级:整段直出,高亮满色,无动画、无光标闪烁 */
-function StaticBoot() {
+function StaticBoot({ script, intro }: { script: Row[]; intro: HeroConfig["intro"] }) {
   return (
     <section className="flex min-h-[88vh] items-center">
       <Container>
@@ -171,12 +133,14 @@ function StaticBoot() {
               {row.kind === "cmd" ? (
                 <CmdInner text={row.text} />
               ) : (
-                <OutInner segs={row.segs} tone={row.tone} />
+                <OutInner text={row.text} tone={row.tone} />
               )}
             </div>
           ))}
         </div>
-        <div className="mt-8">{cta}</div>
+        <div className="mt-8">
+          <Cta intro={intro} />
+        </div>
       </Container>
     </section>
   );
@@ -186,11 +150,14 @@ function StaticBoot() {
  * 首页「开机序列」开场:进入视口后按定时器逐行自动 print 命令与输出,
  * 光标跟随当前末行,最后浮出 CTA。不绑滚动、不钉屏。
  * 仅用 transform/opacity;prefers-reduced-motion 时整段静态直出。
+ * 文案取自后台配置(intro),命令行为固定终端装饰。
  */
-export function HeroIntro() {
+export function HeroIntro({ intro }: { intro: HeroConfig["intro"] }) {
   const reduce = useReducedMotion();
   const ref = useRef<HTMLElement>(null);
   const inView = useInView(ref, { once: true, margin: "-100px" });
+
+  const script = buildScript(intro);
 
   // count = 已揭示行数(rows 0..count-1 可见)
   const [count, setCount] = useState(0);
@@ -214,6 +181,8 @@ export function HeroIntro() {
       timers.current.push(setTimeout(tick, delay));
     };
     timers.current.push(setTimeout(tick, LEAD));
+    // script 由 intro 拼出,首次进入视口时快照即可,无需随引用变化重启
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView, reduce]);
 
   // 卸载时清理所有定时器
@@ -222,7 +191,7 @@ export function HeroIntro() {
     return () => captured.forEach(clearTimeout);
   }, []);
 
-  if (reduce) return <StaticBoot />;
+  if (reduce) return <StaticBoot script={script} intro={intro} />;
 
   // 光标:落在当前已揭示的最后一行;CTA 出现后移除
   const activeIndex = count - 1;
@@ -248,7 +217,7 @@ export function HeroIntro() {
             transition={{ duration: 0.6, ease: EASE_OUT_EXPO }}
             className="pt-4"
           >
-            {cta}
+            <Cta intro={intro} />
           </motion.div>
         </div>
       </Container>
