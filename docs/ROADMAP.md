@@ -11,6 +11,7 @@
 - **Wave 2 · 06 前台展示**:项目列表/详情(筛选/搜索/MDX/浏览量)、关于页(技能进度条)、联系页(Server Action)、SEO(`generateMetadata` + OG image + sitemap + robots)。
 - **Wave 2 · 07 流式 AI**:Vercel AI SDK + GLM 端点 + `streamObject` 结构化标签生成 API。
 - **重做 · 终端美学升级(2026-05)**:UI / 架构从 Apple 风全面重做为**终端 / 工程美学** —— 暖橙琥珀 + 暖灰 stone + JetBrains Mono 设计系统、⌘K 命令面板、`next-view-transitions` 跨页转场 + 项目封面共享元素、全量 PPR(`cacheComponents` + `'use cache'`)、AI 对话分身(`/api/ai/chat`)。3D Hero 已由交互式终端 + 滚动叙事替代。
+- **Wave 3 · 05 后台 CMS(2026-05)**:projects / categories / tags / skills / socialLinks / profile 全量 CRUD(Server Action + Zod + RHF,`requireAdmin` 鉴权 + `cacheTag` 失效)、R2 封面直传、概览 Dashboard;**演示只读模式**(后台对所有人可见可进入,非管理员只读)。siteSettings 暂缓(暂无前台消费方)。
 
 ## 并行波次
 
@@ -29,7 +30,7 @@
 
 ### Wave 3 — 依赖 Wave 2
 
-- [05 后台 CMS](tasks/05-admin-cms.md) — 依赖 **01 + 04**(+02)
+- [05 后台 CMS](tasks/05-admin-cms.md) — 依赖 **01 + 04**(+02) ✅(siteSettings 暂缓)
 - 07 的「后台集成」部分 — 依赖 **05**
 
 ### Wave 4 — 收尾
