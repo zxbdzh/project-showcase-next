@@ -10,6 +10,7 @@
 - **Wave 2 · 04 鉴权**:Auth.js v5 + Drizzle adapter + GitHub OAuth + JWT RBAC,`/admin` 路由保护 + 登录页。
 - **Wave 2 · 06 前台展示**:项目列表/详情(筛选/搜索/MDX/浏览量)、关于页(技能进度条)、联系页(Server Action)、SEO(`generateMetadata` + OG image + sitemap + robots)。
 - **Wave 2 · 07 流式 AI**:Vercel AI SDK + GLM 端点 + `streamObject` 结构化标签生成 API。
+- **重做 · 终端美学升级(2026-05)**:UI / 架构从 Apple 风全面重做为**终端 / 工程美学** —— 暖橙琥珀 + 暖灰 stone + JetBrains Mono 设计系统、⌘K 命令面板、`next-view-transitions` 跨页转场 + 项目封面共享元素、全量 PPR(`cacheComponents` + `'use cache'`)、AI 对话分身(`/api/ai/chat`)。3D Hero 已由交互式终端 + 滚动叙事替代。
 
 ## 并行波次
 

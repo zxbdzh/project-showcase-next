@@ -221,3 +221,12 @@ html.lenis body {
     transform: none;
   }
 }
+
+/* reduced-motion:禁用跨页 View Transitions 动画 */
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
