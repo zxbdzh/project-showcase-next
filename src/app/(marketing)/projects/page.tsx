@@ -65,10 +65,10 @@ async function ProjectsContent({ searchParams }: Props) {
             <FadeIn key={p.id} delay={i * 0.06}>
               <Link
                 href={`/projects/${p.slug}`}
-                className="group border-border/60 bg-card block h-full rounded-2xl border p-6 transition-shadow hover:shadow-lg"
+                className="group border-border/60 bg-card block h-full rounded-md border p-6 transition-shadow hover:shadow-lg"
               >
                 {p.coverImage ? (
-                  <div className="mb-4 aspect-video overflow-hidden rounded-xl">
+                  <div className="mb-4 aspect-video overflow-hidden rounded-sm">
                     <img
                       src={p.coverImage}
                       alt={p.title}
@@ -77,7 +77,7 @@ async function ProjectsContent({ searchParams }: Props) {
                     />
                   </div>
                 ) : (
-                  <div className="bg-muted mb-4 aspect-video rounded-xl" />
+                  <div className="bg-muted mb-4 aspect-video rounded-sm" />
                 )}
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium">{p.title}</h3>
@@ -86,12 +86,12 @@ async function ProjectsContent({ searchParams }: Props) {
                 <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{p.summary}</p>
                 <div className="mt-3 flex flex-wrap gap-1.5">
                   {p.category && (
-                    <Badge variant="secondary" className="rounded-full text-xs">
+                    <Badge variant="secondary" className="rounded-md text-xs">
                       {p.category.name}
                     </Badge>
                   )}
                   {p.techStack?.slice(0, 3).map((tech) => (
-                    <Badge key={tech} variant="outline" className="rounded-full text-xs">
+                    <Badge key={tech} variant="outline" className="rounded-md text-xs">
                       {tech}
                     </Badge>
                   ))}
@@ -109,7 +109,7 @@ async function ProjectsContent({ searchParams }: Props) {
             <Link
               key={p}
               href={`/projects?page=${p}${params.category ? `&category=${params.category}` : ""}${params.q ? `&q=${params.q}` : ""}`}
-              className={`rounded-full px-4 py-2 text-sm transition-colors ${
+              className={`rounded-md px-4 py-2 text-sm transition-colors ${
                 p === page
                   ? "bg-primary text-primary-foreground"
                   : "border-border/60 hover:bg-muted border"
@@ -128,8 +128,8 @@ function ProjectsSkeleton() {
   return (
     <div className="mt-12 grid gap-6 md:grid-cols-2 lg:grid-cols-3">
       {Array.from({ length: 6 }).map((_, i) => (
-        <div key={i} className="border-border/60 rounded-2xl border p-6">
-          <Skeleton className="aspect-video w-full rounded-xl" />
+        <div key={i} className="border-border/60 rounded-md border p-6">
+          <Skeleton className="aspect-video w-full rounded-sm" />
           <Skeleton className="mt-4 h-5 w-2/3" />
           <Skeleton className="mt-2 h-4 w-full" />
           <Skeleton className="mt-1 h-4 w-1/2" />

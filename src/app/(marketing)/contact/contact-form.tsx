@@ -15,7 +15,7 @@ const initialState: ContactFormState = { success: false, message: "" };
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" className="w-full rounded-full" size="lg" disabled={pending}>
+    <Button type="submit" className="w-full rounded-md" size="lg" disabled={pending}>
       {pending ? "发送中..." : "发送留言"}
     </Button>
   );
@@ -38,7 +38,7 @@ export function ContactForm() {
     <form action={formAction} className="space-y-6">
       <div className="space-y-2">
         <Label htmlFor="name">姓名</Label>
-        <Input id="name" name="name" placeholder="你的名字" required className="rounded-lg" />
+        <Input id="name" name="name" placeholder="你的名字" required className="rounded-sm" />
       </div>
       <div className="space-y-2">
         <Label htmlFor="email">邮箱</Label>
@@ -48,7 +48,7 @@ export function ContactForm() {
           type="email"
           placeholder="you@example.com"
           required
-          className="rounded-lg"
+          className="rounded-sm"
         />
       </div>
       <div className="space-y-2">
@@ -59,7 +59,7 @@ export function ContactForm() {
           placeholder="说点什么..."
           rows={5}
           required
-          className="rounded-lg"
+          className="rounded-sm"
         />
       </div>
       <SubmitButton />

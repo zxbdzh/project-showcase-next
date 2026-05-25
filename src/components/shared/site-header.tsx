@@ -50,15 +50,12 @@ async function AuthNav() {
   return session?.user ? (
     <Link
       href="/admin"
-      className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-full px-4" })}
+      className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-md px-4" })}
     >
       后台
     </Link>
   ) : (
-    <Link
-      href="/contact"
-      className={buttonVariants({ size: "sm", className: "rounded-full px-4" })}
-    >
+    <Link href="/contact" className={buttonVariants({ size: "sm", className: "rounded-md px-4" })}>
       合作
     </Link>
   );

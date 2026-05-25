@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
+import { CommentHeading } from "@/components/terminal";
 import { ContactForm } from "./contact-form";
 import { getSocialLinks } from "@/features/social-links/queries";
 
@@ -16,7 +17,8 @@ export default async function ContactPage() {
     <section className="py-24 sm:py-32">
       <Container className="max-w-[640px]">
         <FadeIn>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">联系我</h1>
+          <CommentHeading>contact</CommentHeading>
+          <h1 className="mt-2 text-4xl font-semibold tracking-tight sm:text-5xl">联系我</h1>
           <p className="text-muted-foreground mt-4 text-lg">
             有项目合作、技术交流或工作机会?欢迎留言或通过以下方式联系。
           </p>
@@ -31,7 +33,7 @@ export default async function ContactPage() {
                   href={link.url}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="border-border/60 bg-card hover:border-brand/40 inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-colors"
+                  className="border-border bg-card hover:border-brand inline-flex items-center gap-2 rounded-sm border px-4 py-2 text-sm transition-colors"
                 >
                   {link.platform}
                 </a>

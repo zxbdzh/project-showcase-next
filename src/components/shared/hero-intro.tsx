@@ -116,7 +116,7 @@ export function HeroIntro() {
     "text-3xl leading-[1.25] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl";
 
   const pill = (
-    <div className="border-border/60 bg-card/60 mb-8 inline-flex items-center gap-2 rounded-full border px-3 py-1 backdrop-blur">
+    <div className="border-border/60 bg-card/60 mb-8 inline-flex items-center gap-2 rounded-md border px-3 py-1 backdrop-blur">
       <span className="relative flex size-2">
         <span className="absolute inline-flex size-full rounded-full bg-emerald-500/50" />
         <span className="relative inline-flex size-2 rounded-full bg-emerald-500" />
@@ -129,13 +129,13 @@ export function HeroIntro() {
 
   const cta = (
     <div className="mt-10 flex flex-wrap items-center gap-3">
-      <Link href="/projects" className={buttonVariants({ className: "group rounded-full px-5" })}>
+      <Link href="/projects" className={buttonVariants({ className: "group rounded-md px-5" })}>
         查看作品
         <ArrowUpRight className="size-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
       </Link>
       <Link
         href="/contact"
-        className={buttonVariants({ variant: "outline", className: "rounded-full px-5" })}
+        className={buttonVariants({ variant: "outline", className: "rounded-md px-5" })}
       >
         联系我
       </Link>

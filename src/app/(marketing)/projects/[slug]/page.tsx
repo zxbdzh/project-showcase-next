@@ -86,17 +86,17 @@ async function ProjectDetail({ params }: Props) {
         <FadeIn delay={0.1}>
           <div className="mt-6 flex flex-wrap items-center gap-3">
             {project.category && (
-              <Badge variant="secondary" className="rounded-full">
+              <Badge variant="secondary" className="rounded-md">
                 {project.category.name}
               </Badge>
             )}
             {project.tags?.map((tag) => (
-              <Badge key={tag.id} variant="outline" className="rounded-full">
+              <Badge key={tag.id} variant="outline" className="rounded-md">
                 {tag.name}
               </Badge>
             ))}
             {project.techStack?.map((tech) => (
-              <Badge key={tech} variant="outline" className="rounded-full">
+              <Badge key={tech} variant="outline" className="rounded-md">
                 {tech}
               </Badge>
             ))}
@@ -110,7 +110,7 @@ async function ProjectDetail({ params }: Props) {
                 href={project.demoUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className={buttonVariants({ size: "sm", className: "rounded-full" })}
+                className={buttonVariants({ size: "sm", className: "rounded-md" })}
               >
                 在线演示 <ArrowUpRight className="size-3.5" />
               </Link>
@@ -123,7 +123,7 @@ async function ProjectDetail({ params }: Props) {
                 className={buttonVariants({
                   variant: "outline",
                   size: "sm",
-                  className: "rounded-full",
+                  className: "rounded-md",
                 })}
               >
                 源代码 <ArrowUpRight className="size-3.5" />
@@ -137,7 +137,7 @@ async function ProjectDetail({ params }: Props) {
 
         {project.coverImage && (
           <FadeIn delay={0.16}>
-            <div className="mt-10 aspect-video overflow-hidden rounded-2xl">
+            <div className="mt-10 aspect-video overflow-hidden rounded-md">
               <img
                 src={project.coverImage}
                 alt={project.title}
@@ -166,10 +166,10 @@ async function ProjectDetail({ params }: Props) {
                   <TransitionLink
                     key={p.id}
                     href={`/projects/${p.slug}`}
-                    className="group border-border/60 bg-card block rounded-2xl border p-6 transition-shadow hover:shadow-lg"
+                    className="group border-border/60 bg-card block rounded-md border p-6 transition-shadow hover:shadow-lg"
                   >
                     {p.coverImage ? (
-                      <div className="mb-4 aspect-video overflow-hidden rounded-xl">
+                      <div className="mb-4 aspect-video overflow-hidden rounded-sm">
                         <img
                           src={p.coverImage}
                           alt={p.title}
@@ -178,7 +178,7 @@ async function ProjectDetail({ params }: Props) {
                         />
                       </div>
                     ) : (
-                      <div className="bg-muted mb-4 aspect-video rounded-xl" />
+                      <div className="bg-muted mb-4 aspect-video rounded-sm" />
                     )}
                     <h3 className="font-medium">{p.title}</h3>
                     <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{p.summary}</p>
@@ -205,7 +205,7 @@ function ProjectDetailSkeleton() {
           <Skeleton className="h-6 w-16" />
           <Skeleton className="h-6 w-16" />
         </div>
-        <Skeleton className="mt-10 aspect-video w-full rounded-2xl" />
+        <Skeleton className="mt-10 aspect-video w-full rounded-md" />
         <div className="mt-12 space-y-3">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />

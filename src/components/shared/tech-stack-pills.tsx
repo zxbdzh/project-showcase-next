@@ -9,7 +9,7 @@ interface TechStackPillsProps {
 
 export function TechStackPills({ name, icon }: TechStackPillsProps) {
   return (
-    <span className="tech-pill border-border/60 bg-card inline-flex items-center gap-2 rounded-full border px-4 py-2 text-sm transition-all duration-300">
+    <span className="border-border bg-card hover:border-brand inline-flex items-center gap-2 rounded-sm border px-3 py-1.5 text-sm transition-colors">
       {icon && <TechIconColor icon={icon} className="size-4 shrink-0" />}
       {name}
     </span>

@@ -38,7 +38,7 @@ export function ProjectFilters({ categories, currentCategory, currentQ }: Props)
       <div className="flex flex-wrap gap-2">
         <Badge
           variant={!currentCategory ? "default" : "outline"}
-          className="cursor-pointer rounded-full"
+          className="cursor-pointer rounded-sm"
           onClick={() => setFilter("category", null)}
         >
           全部
@@ -47,7 +47,7 @@ export function ProjectFilters({ categories, currentCategory, currentQ }: Props)
           <Badge
             key={cat.id}
             variant={currentCategory === cat.slug ? "default" : "outline"}
-            className="cursor-pointer rounded-full"
+            className="cursor-pointer rounded-sm"
             onClick={() => setFilter("category", cat.slug)}
           >
             {cat.name}
@@ -60,7 +60,7 @@ export function ProjectFilters({ categories, currentCategory, currentQ }: Props)
         <Search className="text-muted-foreground absolute top-1/2 left-3 size-4 -translate-y-1/2" />
         <Input
           placeholder="搜索项目..."
-          className="rounded-full pl-9"
+          className="rounded-sm pl-9 font-mono"
           defaultValue={currentQ}
           onKeyDown={(e) => {
             if (e.key === "Enter") {

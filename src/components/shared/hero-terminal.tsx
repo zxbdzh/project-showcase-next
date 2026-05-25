@@ -168,7 +168,7 @@ export function HeroTerminal() {
       {/* 工程图纸网格底纹 */}
       <GridBackdrop />
 
-      <div className="border-border/60 bg-card/70 flex min-h-[20rem] flex-col rounded-2xl border backdrop-blur-md sm:min-h-[24rem]">
+      <div className="border-border/60 bg-card/70 flex min-h-[20rem] flex-col rounded-md border backdrop-blur-md sm:min-h-[24rem]">
         {/* 标题栏 */}
         <div className="border-border/50 flex items-center gap-1.5 border-b px-4 py-2.5">
           <span className="size-3 rounded-full bg-red-400/80" />

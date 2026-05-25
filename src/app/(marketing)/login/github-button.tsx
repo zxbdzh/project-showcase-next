@@ -7,7 +7,7 @@ export function GithubLoginButton() {
   return (
     <Button
       onClick={() => signIn("github", { callbackUrl: "/admin" })}
-      className="w-full rounded-full"
+      className="w-full rounded-md"
       size="lg"
     >
       <svg className="mr-2 size-4" viewBox="0 0 24 24" fill="currentColor">
