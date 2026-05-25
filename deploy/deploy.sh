@@ -1,22 +1,23 @@
 #!/usr/bin/env bash
 # 一键部署:在服务器仓库根目录执行 `bash deploy/deploy.sh`
-# 前置:已装 docker + docker compose;仓库根目录已有填好的 .env
+# 镜像由 GitHub Actions 在 ARM64 runner 构建并推送到 GHCR,本机只拉取运行、不再本地构建。
+# 前置:已装 docker + docker compose;仓库根目录有填好的【运行期】.env
 set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if [ ! -f .env ]; then
-  echo "✗ 缺少 .env(部署所需的环境变量),请先从 .env.example 复制并填写" >&2
+  echo "✗ 缺少 .env(运行期环境变量),请先从 .env.example 复制并填写" >&2
   exit 1
 fi
 
-echo "==> 拉取最新代码"
+echo "==> 拉取最新代码(获取最新 docker-compose.yml)"
 git pull --ff-only
 
-echo "==> 构建镜像(.env 作为构建密钥注入,NEXT_PUBLIC_* 在此内联)"
-DOCKER_BUILDKIT=1 docker compose build
+# 若 GHCR 镜像包设为私有,需先登录(公开包可跳过):
+#   echo "$GHCR_PAT" | docker login ghcr.io -u zxbdzh --password-stdin
 
-# 首次部署或改了 src/db/schema 后,同步数据库结构(取消注释执行):
-#   docker compose run --rm migrate
+echo "==> 拉取最新镜像"
+docker compose pull
 
 echo "==> 启动 / 滚动更新容器"
 docker compose up -d

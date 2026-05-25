@@ -1,0 +1,33 @@
+name: DB Push (drizzle-kit)
+
+# 手动触发:在 CI 上对线上数据库执行 drizzle-kit push 同步表结构。
+# CI runner 可直连 Neon(公网),无需在 NAS 上保留含源码/drizzle 的镜像。
+# 注意:drizzle-kit push 遇到破坏性变更会要求交互确认,在 CI 非交互环境下可能失败,
+#       此时请查看日志,必要时本地用 pnpm db:generate + db:migrate 走迁移文件流程。
+
+on:
+  workflow_dispatch:
+
+jobs:
+  db-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: 配置 pnpm(读 package.json 的 packageManager)
+        uses: pnpm/action-setup@v4
+
+      - name: 配置 Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: "pnpm"
+
+      - name: 安装依赖
+        run: pnpm install --frozen-lockfile
+
+      - name: 同步数据库结构(drizzle-kit push)
+        run: pnpm db:push
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
