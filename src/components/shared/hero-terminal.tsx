@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
-import { useReducedMotion } from "motion/react";
+import { useInView, useReducedMotion } from "motion/react";
 import { GridBackdrop } from "@/components/terminal";
 
 type Line = { id: number; kind: "cmd" | "out"; content: ReactNode };
@@ -88,9 +88,15 @@ export function HeroTerminal() {
   const [busy, setBusy] = useState(false);
 
   const idRef = useRef(0);
+  const rootRef = useRef<HTMLDivElement>(null);
   const bodyRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const timers = useRef<ReturnType<typeof setTimeout>[]>([]);
+  const startedRef = useRef(false);
+
+  // 仅当终端滚动进入视口后才触发自动打字 —— 让用户看完上方滚动叙事再开场,
+  // 而非页面一加载就在屏幕外把动画播完(滚到这里只剩结果)。
+  const inView = useInView(rootRef, { once: true, margin: "-80px" });
 
   const commit = useCallback((cmd: string) => {
     const c = cmd.trim();
@@ -137,16 +143,19 @@ export function HeroTerminal() {
     [busy, reduce, commit]
   );
 
-  // 入场:自动打出 whoami
+  // 入场:进入视口后再自动打出 whoami(只触发一次)
+  useEffect(() => {
+    if (!inView || startedRef.current) return;
+    startedRef.current = true;
+    timers.current.push(setTimeout(() => play("whoami"), 320));
+    // 仅在进入视口时播放一次
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView]);
+
+  // 卸载时清理所有定时器
   useEffect(() => {
     const captured = timers.current;
-    const t = setTimeout(() => play("whoami"), 500);
-    return () => {
-      clearTimeout(t);
-      captured.forEach(clearTimeout);
-    };
-    // 仅在挂载时播放一次
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => captured.forEach(clearTimeout);
   }, []);
 
   // 输出后滚动到底部
@@ -164,7 +173,10 @@ export function HeroTerminal() {
   };
 
   return (
-    <div className="border-border bg-muted/30 relative isolate overflow-hidden rounded-lg border p-3 sm:p-4">
+    <div
+      ref={rootRef}
+      className="border-border bg-muted/30 relative isolate overflow-hidden rounded-lg border p-3 sm:p-4"
+    >
       {/* 工程图纸网格底纹 */}
       <GridBackdrop />
 
