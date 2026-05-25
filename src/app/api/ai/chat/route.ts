@@ -46,6 +46,9 @@ export async function POST(req: Request) {
     system,
     messages,
     temperature: 0.6,
+    onError: ({ error }) => {
+      console.error("[ai/chat] stream error:", error);
+    },
   });
 
   return result.toTextStreamResponse();

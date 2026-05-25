@@ -27,5 +27,7 @@ export function getModel(): LanguageModel {
     apiKey: env.OPENAI_API_KEY,
     ...(env.OPENAI_BASE_URL ? { baseURL: env.OPENAI_BASE_URL } : {}),
   });
-  return openai(env.AI_MODEL ?? DEFAULT_MODEL.openai);
+  // 用 chat completions(/chat/completions),而非 AI SDK v6 默认的 Responses API(/responses)。
+  // 多数 OpenAI 兼容端点(GLM、DeepSeek 等)只实现前者,用默认会 404。
+  return openai.chat(env.AI_MODEL ?? DEFAULT_MODEL.openai);
 }

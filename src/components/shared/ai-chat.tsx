@@ -26,7 +26,9 @@ export function AiChat() {
   async function ask(q: string) {
     const text = q.trim();
     if (!text || busy) return;
-    const next: Msg[] = [...messages, { role: "user", content: text }];
+    // 只把有内容的历史发给后端,避免上一轮空回复(content:"")触发服务端 400 校验。
+    const history = messages.filter((m) => m.content.trim());
+    const next: Msg[] = [...history, { role: "user", content: text }];
     setMessages([...next, { role: "assistant", content: "" }]);
     setInput("");
     setBusy(true);
@@ -47,6 +49,13 @@ export function AiChat() {
         setMessages((m) => {
           const copy = [...m];
           copy[copy.length - 1] = { role: "assistant", content: acc };
+          return copy;
+        });
+      }
+      if (!acc.trim()) {
+        setMessages((m) => {
+          const copy = [...m];
+          copy[copy.length - 1] = { role: "assistant", content: "⚠ 没有收到回复,请稍后再试。" };
           return copy;
         });
       }
