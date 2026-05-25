@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getTags } from "@/features/taxonomy/queries";
-import { isAdmin } from "@/lib/is-admin";
 import { TagManager } from "@/features/taxonomy/components/tag-manager";
 
 export default function AdminTagsPage() {
@@ -16,11 +15,6 @@ export default function AdminTagsPage() {
 }
 
 async function TagList() {
-  const [rows, admin] = await Promise.all([getTags(), isAdmin()]);
-  return (
-    <TagManager
-      rows={rows.map((t) => ({ id: t.id, name: t.name, slug: t.slug }))}
-      readOnly={!admin}
-    />
-  );
+  const rows = await getTags();
+  return <TagManager rows={rows.map((t) => ({ id: t.id, name: t.name, slug: t.slug }))} />;
 }

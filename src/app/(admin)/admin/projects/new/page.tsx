@@ -1,7 +1,6 @@
 import { Suspense } from "react";
 import { getCategories, getTags } from "@/features/taxonomy/queries";
 import { isStorageConfigured } from "@/lib/storage";
-import { isAdmin } from "@/lib/is-admin";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import type { ProjectFormValues } from "@/features/projects/schema";
 
@@ -34,7 +33,7 @@ export default function NewProjectPage() {
 }
 
 async function NewProjectForm() {
-  const [cats, tgs, admin] = await Promise.all([getCategories(), getTags(), isAdmin()]);
+  const [cats, tgs] = await Promise.all([getCategories(), getTags()]);
   const uploadEnabled = isStorageConfigured();
 
   return (
@@ -43,7 +42,6 @@ async function NewProjectForm() {
       categories={cats.map((c) => ({ id: c.id, name: c.name }))}
       tags={tgs.map((t) => ({ id: t.id, name: t.name }))}
       uploadEnabled={uploadEnabled}
-      readOnly={!admin}
     />
   );
 }

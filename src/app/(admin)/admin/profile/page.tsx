@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { getEditableProfile } from "@/features/profile/admin-queries";
-import { isAdmin } from "@/lib/is-admin";
+import { isStorageConfigured } from "@/lib/storage";
 import { ProfileForm } from "@/features/profile/components/profile-form";
 import type { ProfileFormValues } from "@/features/profile/schema";
 
@@ -19,7 +19,8 @@ export default function AdminProfilePage() {
 }
 
 async function ProfileEditor() {
-  const [profile, admin] = await Promise.all([getEditableProfile(), isAdmin()]);
+  const profile = await getEditableProfile();
+  const uploadEnabled = isStorageConfigured();
 
   const defaultValues: ProfileFormValues = {
     headline: profile?.headline ?? "",
@@ -29,5 +30,5 @@ async function ProfileEditor() {
     avatar: profile?.avatar ?? "",
   };
 
-  return <ProfileForm defaultValues={defaultValues} readOnly={!admin} />;
+  return <ProfileForm defaultValues={defaultValues} uploadEnabled={uploadEnabled} />;
 }

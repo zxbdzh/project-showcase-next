@@ -32,13 +32,7 @@ const columns: CrudColumn<SocialLinkRow>[] = [
 
 const empty: SocialLinkFormValues = { platform: "", url: "", icon: "", sortOrder: 0 };
 
-export function SocialLinkManager({
-  rows,
-  readOnly,
-}: {
-  rows: SocialLinkRow[];
-  readOnly: boolean;
-}) {
+export function SocialLinkManager({ rows }: { rows: SocialLinkRow[] }) {
   return (
     <CrudManager
       rows={rows}
@@ -58,7 +52,6 @@ export function SocialLinkManager({
       update={updateSocialLink}
       remove={deleteSocialLink}
       emptyHint="还没有社交链接,点击右上角新建。"
-      readOnly={readOnly}
     />
   );
 }

@@ -11,7 +11,7 @@ const ALLOWED = ["image/jpeg", "image/png", "image/webp", "image/gif", "image/sv
 const MAX_SIZE = 5 * 1024 * 1024;
 
 /**
- * 图片字段:R2 已配置时支持选文件直传(预签名 PUT),否则仅手填 URL。
+ * 图片字段:对象存储已配置时支持选文件直传(预签名 PUT),否则仅手填 URL。
  * 受控:value 为已落库的公开 URL,变更经 onChange 回传。
  */
 export function ImageUpload({

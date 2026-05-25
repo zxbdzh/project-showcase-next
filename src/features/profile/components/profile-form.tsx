@@ -1,26 +1,28 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useForm } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
 import { Field } from "@/components/admin/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Button } from "@/components/ui/button";
+import { ImageUpload } from "@/components/admin/image-upload";
 import { profileFormSchema, type ProfileFormValues } from "../schema";
 import { updateProfile } from "../actions";
 
 export function ProfileForm({
   defaultValues,
-  readOnly,
+  uploadEnabled,
 }: {
   defaultValues: ProfileFormValues;
-  readOnly: boolean;
+  uploadEnabled: boolean;
 }) {
   const router = useRouter();
   const {
     register,
+    control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting },
@@ -46,7 +48,7 @@ export function ProfileForm({
 
   return (
     <form onSubmit={onSubmit} className="max-w-2xl space-y-5">
-      <fieldset disabled={readOnly} className="space-y-5">
+      <fieldset className="space-y-5">
         <Field label="一句话简介" htmlFor="headline" error={errors.headline?.message}>
           <Input id="headline" placeholder="如 Java 为主的全栈开发者" {...register("headline")} />
         </Field>
@@ -64,16 +66,23 @@ export function ProfileForm({
           </Field>
         </div>
 
-        <Field label="头像地址" htmlFor="avatar" error={errors.avatar?.message} hint="图片 URL">
-          <Input id="avatar" placeholder="https://" {...register("avatar")} />
+        <Field label="头像" error={errors.avatar?.message} hint="上传图片或粘贴 URL">
+          <Controller
+            control={control}
+            name="avatar"
+            render={({ field }) => (
+              <ImageUpload
+                value={field.value ?? ""}
+                onChange={field.onChange}
+                uploadEnabled={uploadEnabled}
+                alt="头像预览"
+              />
+            )}
+          />
         </Field>
       </fieldset>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting || readOnly}
-        title={readOnly ? "仅管理员可操作" : undefined}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "保存中…" : "保存资料"}
       </Button>
     </form>

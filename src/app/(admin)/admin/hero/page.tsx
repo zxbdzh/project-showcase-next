@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getHeroConfigForEdit } from "@/features/hero/admin-queries";
-import { isAdmin } from "@/lib/is-admin";
 import { HeroForm } from "@/features/hero/components/hero-form";
 
 export default function AdminHeroPage() {
@@ -18,6 +17,6 @@ export default function AdminHeroPage() {
 }
 
 async function HeroEditor() {
-  const [cfg, admin] = await Promise.all([getHeroConfigForEdit(), isAdmin()]);
-  return <HeroForm defaultValues={cfg} readOnly={!admin} />;
+  const cfg = await getHeroConfigForEdit();
+  return <HeroForm defaultValues={cfg} />;
 }

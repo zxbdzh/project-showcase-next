@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getCategories } from "@/features/taxonomy/queries";
-import { isAdmin } from "@/lib/is-admin";
 import { CategoryManager } from "@/features/taxonomy/components/category-manager";
 
 export default function AdminCategoriesPage() {
@@ -16,11 +15,10 @@ export default function AdminCategoriesPage() {
 }
 
 async function CategoryList() {
-  const [rows, admin] = await Promise.all([getCategories(), isAdmin()]);
+  const rows = await getCategories();
   return (
     <CategoryManager
       rows={rows.map((c) => ({ id: c.id, name: c.name, slug: c.slug, description: c.description }))}
-      readOnly={!admin}
     />
   );
 }

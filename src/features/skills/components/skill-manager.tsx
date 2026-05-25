@@ -33,7 +33,7 @@ const columns: CrudColumn<SkillRow>[] = [
 
 const empty: SkillFormValues = { name: "", category: "", level: 0, icon: "", sortOrder: 0 };
 
-export function SkillManager({ rows, readOnly }: { rows: SkillRow[]; readOnly: boolean }) {
+export function SkillManager({ rows }: { rows: SkillRow[] }) {
   return (
     <CrudManager
       rows={rows}
@@ -54,7 +54,6 @@ export function SkillManager({ rows, readOnly }: { rows: SkillRow[]; readOnly: b
       update={updateSkill}
       remove={deleteSkill}
       emptyHint="还没有技能,点击右上角新建。"
-      readOnly={readOnly}
     />
   );
 }

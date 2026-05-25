@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getSkills } from "@/features/skills/queries";
-import { isAdmin } from "@/lib/is-admin";
 import { SkillManager } from "@/features/skills/components/skill-manager";
 
 export default function AdminSkillsPage() {
@@ -16,7 +15,7 @@ export default function AdminSkillsPage() {
 }
 
 async function SkillList() {
-  const [rows, admin] = await Promise.all([getSkills(), isAdmin()]);
+  const rows = await getSkills();
   return (
     <SkillManager
       rows={rows.map((s) => ({
@@ -27,7 +26,6 @@ async function SkillList() {
         icon: s.icon,
         sortOrder: s.sortOrder ?? 0,
       }))}
-      readOnly={!admin}
     />
   );
 }

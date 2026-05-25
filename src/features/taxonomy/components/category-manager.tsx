@@ -37,7 +37,7 @@ const columns: CrudColumn<CategoryRow>[] = [
 
 const empty: CategoryFormValues = { name: "", slug: "", description: "" };
 
-export function CategoryManager({ rows, readOnly }: { rows: CategoryRow[]; readOnly: boolean }) {
+export function CategoryManager({ rows }: { rows: CategoryRow[] }) {
   return (
     <CrudManager
       rows={rows}
@@ -52,7 +52,6 @@ export function CategoryManager({ rows, readOnly }: { rows: CategoryRow[]; readO
       update={updateCategory}
       remove={deleteCategory}
       emptyHint="还没有分类,点击右上角新建。"
-      readOnly={readOnly}
     />
   );
 }

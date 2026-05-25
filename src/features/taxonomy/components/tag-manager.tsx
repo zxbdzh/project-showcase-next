@@ -31,7 +31,7 @@ const columns: CrudColumn<TagRow>[] = [
 
 const empty: TagFormValues = { name: "", slug: "" };
 
-export function TagManager({ rows, readOnly }: { rows: TagRow[]; readOnly: boolean }) {
+export function TagManager({ rows }: { rows: TagRow[] }) {
   return (
     <CrudManager
       rows={rows}
@@ -46,7 +46,6 @@ export function TagManager({ rows, readOnly }: { rows: TagRow[]; readOnly: boole
       update={updateTag}
       remove={deleteTag}
       emptyHint="还没有标签,点击右上角新建。"
-      readOnly={readOnly}
     />
   );
 }

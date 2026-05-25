@@ -1,6 +1,5 @@
 import { Suspense } from "react";
 import { getSocialLinks } from "@/features/social-links/queries";
-import { isAdmin } from "@/lib/is-admin";
 import { SocialLinkManager } from "@/features/social-links/components/social-link-manager";
 
 export default function AdminSocialLinksPage() {
@@ -16,7 +15,7 @@ export default function AdminSocialLinksPage() {
 }
 
 async function SocialLinkList() {
-  const [rows, admin] = await Promise.all([getSocialLinks(), isAdmin()]);
+  const rows = await getSocialLinks();
   return (
     <SocialLinkManager
       rows={rows.map((l) => ({
@@ -26,7 +25,6 @@ async function SocialLinkList() {
         icon: l.icon,
         sortOrder: l.sortOrder ?? 0,
       }))}
-      readOnly={!admin}
     />
   );
 }

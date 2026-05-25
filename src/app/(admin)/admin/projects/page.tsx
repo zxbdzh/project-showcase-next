@@ -4,7 +4,6 @@ import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { cn } from "@/lib/utils";
-import { isAdmin } from "@/lib/is-admin";
 import { listAdminProjects } from "@/features/projects/admin-queries";
 import { ProjectRowActions } from "@/features/projects/components/project-row-actions";
 
@@ -13,9 +12,9 @@ export default function AdminProjectsPage() {
     <div>
       <div className="flex items-center justify-between">
         <h1 className="text-2xl font-semibold tracking-tight">项目</h1>
-        <Suspense fallback={null}>
-          <NewProjectButton />
-        </Suspense>
+        <Link href="/admin/projects/new" className={buttonVariants({ size: "sm" })}>
+          <Plus /> 新建项目
+        </Link>
       </div>
 
       <Suspense
@@ -31,28 +30,8 @@ export default function AdminProjectsPage() {
   );
 }
 
-async function NewProjectButton() {
-  if (!(await isAdmin())) {
-    return (
-      <span
-        className={cn(buttonVariants({ size: "sm" }), "pointer-events-none opacity-50")}
-        title="仅管理员可操作"
-        aria-disabled
-      >
-        <Plus /> 新建项目
-      </span>
-    );
-  }
-  return (
-    <Link href="/admin/projects/new" className={buttonVariants({ size: "sm" })}>
-      <Plus /> 新建项目
-    </Link>
-  );
-}
-
 async function ProjectTable() {
-  const [projects, admin] = await Promise.all([listAdminProjects(), isAdmin()]);
-  const readOnly = !admin;
+  const projects = await listAdminProjects();
 
   if (projects.length === 0) {
     return (
@@ -116,7 +95,6 @@ async function ProjectTable() {
                     title={p.title}
                     status={p.status}
                     featured={p.featured}
-                    readOnly={readOnly}
                   />
                 </td>
               </tr>

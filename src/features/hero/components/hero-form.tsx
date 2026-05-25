@@ -12,13 +12,7 @@ import { Button } from "@/components/ui/button";
 import { heroConfigSchema, type HeroConfig } from "../schema";
 import { updateHero } from "../actions";
 
-export function HeroForm({
-  defaultValues,
-  readOnly,
-}: {
-  defaultValues: HeroConfig;
-  readOnly: boolean;
-}) {
+export function HeroForm({ defaultValues }: { defaultValues: HeroConfig }) {
   const router = useRouter();
   const {
     register,
@@ -59,7 +53,7 @@ export function HeroForm({
         <span className="text-foreground">clear</span> 为内置命令。
       </p>
 
-      <fieldset disabled={readOnly} className="space-y-8">
+      <fieldset className="space-y-8">
         {/* 开场 · 开机序列 */}
         <section className="space-y-5">
           <h2 className="font-mono text-sm font-medium">
@@ -119,7 +113,7 @@ export function HeroForm({
               variant="outline"
               size="sm"
               onClick={() => append({ name: "", desc: "", output: "" })}
-              disabled={readOnly || fields.length >= 12}
+              disabled={fields.length >= 12}
             >
               <Plus className="size-4" />
               新增命令
@@ -160,7 +154,6 @@ export function HeroForm({
                     variant="ghost"
                     size="sm"
                     onClick={() => remove(i)}
-                    disabled={readOnly}
                     className="text-muted-foreground hover:text-destructive"
                   >
                     <Trash2 className="size-4" />
@@ -173,11 +166,7 @@ export function HeroForm({
         </section>
       </fieldset>
 
-      <Button
-        type="submit"
-        disabled={isSubmitting || readOnly}
-        title={readOnly ? "仅管理员可操作" : undefined}
-      >
+      <Button type="submit" disabled={isSubmitting}>
         {isSubmitting ? "保存中…" : "保存 Hero"}
       </Button>
     </form>

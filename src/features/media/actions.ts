@@ -15,7 +15,7 @@ const uploadSchema = z.object({
   size: z.number().int().positive().max(MAX_SIZE, "图片不能超过 5MB"),
 });
 
-/** 为后台图片上传生成 R2 预签名直传地址。仅管理员可用,密钥不下发客户端。 */
+/** 为后台图片上传生成对象存储预签名直传地址。仅管理员可用,密钥不下发客户端。 */
 export async function requestUploadUrl(
   input: unknown
 ): Promise<ActionResult<{ uploadUrl: string; publicUrl: string }>> {

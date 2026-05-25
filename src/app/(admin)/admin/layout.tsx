@@ -32,7 +32,7 @@ async function AdminShell({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
-  // 演示:任意登录用户均可进入后台浏览;非管理员只读,写操作由各 Server Action 的 requireAdmin 拒绝。
+  // 演示:任意登录用户均可进入后台并操作界面,但写操作会被各 Server Action 的 requireAdmin 拒绝。
   const admin = session.user.role === "admin";
 
   return (
@@ -60,7 +60,7 @@ async function AdminShell({ children }: { children: ReactNode }) {
           <div className="flex items-center gap-3">
             {!admin && (
               <span className="border-border text-muted-foreground rounded-md border px-2 py-0.5 font-mono text-xs">
-                只读演示
+                演示账号
               </span>
             )}
             <span className="text-muted-foreground text-xs">
@@ -82,7 +82,7 @@ async function AdminShell({ children }: { children: ReactNode }) {
           {!admin && (
             <div className="border-brand/30 bg-brand/5 text-muted-foreground mb-6 rounded-md border px-4 py-2.5 text-sm">
               <span className="text-brand font-mono">{"// "}</span>
-              当前为只读演示模式,你可以浏览全部后台界面,但增删改操作仅管理员可用。
+              当前为演示账号,可自由操作全部后台界面;但增删改在提交时会被服务端拒绝,仅管理员能真正写入。
             </div>
           )}
           {children}

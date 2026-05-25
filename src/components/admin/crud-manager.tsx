@@ -12,7 +12,7 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { ZodType } from "zod";
 import { toast } from "sonner";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -61,7 +61,6 @@ export function CrudManager<R extends { id: string }, V extends FieldValues>({
   update,
   remove,
   emptyHint,
-  readOnly = false,
 }: {
   rows: R[];
   columns: CrudColumn<R>[];
@@ -75,7 +74,6 @@ export function CrudManager<R extends { id: string }, V extends FieldValues>({
   update: (id: string, input: V) => Promise<ActionResult<unknown>>;
   remove: (id: string) => Promise<ActionResult>;
   emptyHint: string;
-  readOnly?: boolean;
 }) {
   const router = useRouter();
   const [open, setOpen] = useState(false);
@@ -127,12 +125,7 @@ export function CrudManager<R extends { id: string }, V extends FieldValues>({
   return (
     <>
       <div className="flex justify-end">
-        <Button
-          size="sm"
-          onClick={openCreate}
-          disabled={readOnly}
-          title={readOnly ? "仅管理员可操作" : undefined}
-        >
+        <Button size="sm" onClick={openCreate}>
           <Plus /> 新建{entityName}
         </Button>
       </div>
@@ -174,25 +167,12 @@ export function CrudManager<R extends { id: string }, V extends FieldValues>({
                         variant="ghost"
                         size="icon-sm"
                         onClick={() => openEdit(row)}
-                        disabled={readOnly}
                         aria-label={`编辑 ${labelOf(row)}`}
-                        title={readOnly ? "仅管理员可操作" : "编辑"}
+                        title="编辑"
                       >
                         <Pencil className="size-4" />
                       </Button>
-                      {readOnly ? (
-                        <Button
-                          variant="ghost"
-                          size="icon-sm"
-                          disabled
-                          aria-label={`删除 ${labelOf(row)}`}
-                          title="仅管理员可操作"
-                        >
-                          <Trash2 className="text-destructive size-4" />
-                        </Button>
-                      ) : (
-                        <DeleteButton itemName={labelOf(row)} action={() => remove(row.id)} />
-                      )}
+                      <DeleteButton itemName={labelOf(row)} action={() => remove(row.id)} />
                     </div>
                   </td>
                 </tr>
