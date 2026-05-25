@@ -1,5 +1,7 @@
+import { Suspense } from "react";
 import { getCategories, getTags } from "@/features/taxonomy/queries";
 import { isStorageConfigured } from "@/lib/storage";
+import { isAdmin } from "@/lib/is-admin";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import type { ProjectFormValues } from "@/features/projects/schema";
 
@@ -19,20 +21,29 @@ const emptyDefaults: ProjectFormValues = {
   tagIds: [],
 };
 
-export default async function NewProjectPage() {
-  const [cats, tgs] = await Promise.all([getCategories(), getTags()]);
-  const uploadEnabled = isStorageConfigured();
-
+export default function NewProjectPage() {
   return (
     <div>
       <h1 className="text-2xl font-semibold tracking-tight">新建项目</h1>
       <p className="text-muted-foreground mt-1 mb-6 text-sm">填写项目信息后保存。</p>
-      <ProjectForm
-        defaultValues={emptyDefaults}
-        categories={cats.map((c) => ({ id: c.id, name: c.name }))}
-        tags={tgs.map((t) => ({ id: t.id, name: t.name }))}
-        uploadEnabled={uploadEnabled}
-      />
+      <Suspense fallback={<p className="text-muted-foreground text-sm">加载中…</p>}>
+        <NewProjectForm />
+      </Suspense>
     </div>
+  );
+}
+
+async function NewProjectForm() {
+  const [cats, tgs, admin] = await Promise.all([getCategories(), getTags(), isAdmin()]);
+  const uploadEnabled = isStorageConfigured();
+
+  return (
+    <ProjectForm
+      defaultValues={emptyDefaults}
+      categories={cats.map((c) => ({ id: c.id, name: c.name }))}
+      tags={tgs.map((t) => ({ id: t.id, name: t.name }))}
+      uploadEnabled={uploadEnabled}
+      readOnly={!admin}
+    />
   );
 }

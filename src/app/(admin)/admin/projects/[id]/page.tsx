@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getCategories, getTags } from "@/features/taxonomy/queries";
 import { getAdminProjectById, listAllProjectIds } from "@/features/projects/admin-queries";
 import { isStorageConfigured } from "@/lib/storage";
+import { isAdmin } from "@/lib/is-admin";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import type { ProjectFormValues } from "@/features/projects/schema";
 
@@ -28,10 +29,11 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
 async function EditForm({ params }: { params: Promise<{ id: string }> }) {
   await connection();
   const { id } = await params;
-  const [project, cats, tgs] = await Promise.all([
+  const [project, cats, tgs, admin] = await Promise.all([
     getAdminProjectById(id),
     getCategories(),
     getTags(),
+    isAdmin(),
   ]);
   if (!project) notFound();
 
@@ -60,6 +62,7 @@ async function EditForm({ params }: { params: Promise<{ id: string }> }) {
       categories={cats.map((c) => ({ id: c.id, name: c.name }))}
       tags={tgs.map((t) => ({ id: t.id, name: t.name }))}
       uploadEnabled={uploadEnabled}
+      readOnly={!admin}
     />
   );
 }

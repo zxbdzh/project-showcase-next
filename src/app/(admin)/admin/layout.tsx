@@ -13,7 +13,7 @@ const adminNav = [
   { href: "/admin/tags", label: "标签" },
   { href: "/admin/skills", label: "技能" },
   { href: "/admin/social-links", label: "社交链接" },
-  { href: "/admin/settings", label: "站点设置" },
+  { href: "/admin/profile", label: "资料" },
 ];
 
 export default function AdminLayout({ children }: { children: ReactNode }) {
@@ -31,9 +31,8 @@ async function AdminShell({ children }: { children: ReactNode }) {
     redirect("/login");
   }
 
-  if (session.user.role !== "admin") {
-    redirect("/");
-  }
+  // 演示:任意登录用户均可进入后台浏览;非管理员只读,写操作由各 Server Action 的 requireAdmin 拒绝。
+  const admin = session.user.role === "admin";
 
   return (
     <div className="flex min-h-screen flex-1">
@@ -58,6 +57,11 @@ async function AdminShell({ children }: { children: ReactNode }) {
         <header className="border-border/60 flex h-14 items-center justify-between border-b px-6">
           <span className="text-muted-foreground text-sm">后台管理</span>
           <div className="flex items-center gap-3">
+            {!admin && (
+              <span className="border-border text-muted-foreground rounded-md border px-2 py-0.5 font-mono text-xs">
+                只读演示
+              </span>
+            )}
             <span className="text-muted-foreground text-xs">
               {session.user.name ?? session.user.email}
             </span>
@@ -73,7 +77,15 @@ async function AdminShell({ children }: { children: ReactNode }) {
             </form>
           </div>
         </header>
-        <main className="flex-1 p-6">{children}</main>
+        <main className="flex-1 p-6">
+          {!admin && (
+            <div className="border-brand/30 bg-brand/5 text-muted-foreground mb-6 rounded-md border px-4 py-2.5 text-sm">
+              <span className="text-brand font-mono">{"// "}</span>
+              当前为只读演示模式,你可以浏览全部后台界面,但增删改操作仅管理员可用。
+            </div>
+          )}
+          {children}
+        </main>
       </div>
     </div>
   );

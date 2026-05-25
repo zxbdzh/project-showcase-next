@@ -1,11 +1,8 @@
-import { Suspense } from "react";
 import { Link } from "next-view-transitions";
 import { Container } from "./container";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CommandMenuButton } from "@/components/command-palette";
-import { Skeleton } from "@/components/ui/skeleton";
 import { buttonVariants } from "@/components/ui/button";
-import { auth } from "@/lib/auth";
 
 const navItems = [
   { href: "/projects", label: "作品" },
@@ -35,28 +32,19 @@ export function SiteHeader() {
         <div className="flex items-center gap-1.5">
           <CommandMenuButton />
           <ThemeToggle />
-          <Suspense fallback={<Skeleton className="h-8 w-16 rounded-full" />}>
-            <AuthNav />
-          </Suspense>
+          {/* 演示:后台入口对所有访客可见;未登录点击后由 /admin 重定向至登录。 */}
+          <Link
+            href="/admin"
+            className={buttonVariants({
+              variant: "ghost",
+              size: "sm",
+              className: "rounded-md px-4",
+            })}
+          >
+            后台
+          </Link>
         </div>
       </Container>
     </header>
-  );
-}
-
-/** 依赖会话(cookies)的动态部分,单独流式渲染,避免阻塞整个 header */
-async function AuthNav() {
-  const session = await auth();
-  return session?.user ? (
-    <Link
-      href="/admin"
-      className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-md px-4" })}
-    >
-      后台
-    </Link>
-  ) : (
-    <Link href="/contact" className={buttonVariants({ size: "sm", className: "rounded-md px-4" })}>
-      合作
-    </Link>
   );
 }
