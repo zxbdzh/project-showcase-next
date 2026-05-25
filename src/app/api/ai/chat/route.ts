@@ -1,6 +1,6 @@
 import { streamText } from "ai";
 import { z } from "zod";
-import { glm, GLM_MODEL } from "@/lib/ai";
+import { getModel } from "@/lib/ai";
 import { getAdminProfile } from "@/features/profile/queries";
 import { getSkills } from "@/features/skills/queries";
 import { getFeaturedProjects } from "@/features/projects/queries";
@@ -42,7 +42,7 @@ export async function POST(req: Request) {
   ].join("\n");
 
   const result = streamText({
-    model: glm(GLM_MODEL),
+    model: getModel(),
     system,
     messages,
     temperature: 0.6,

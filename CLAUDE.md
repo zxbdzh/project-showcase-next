@@ -36,18 +36,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## 技术栈
 
-| 层        | 选型                                                                                                                                                      |
-| --------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| 框架      | Next.js 16(App Router / RSC / Server Actions / `cacheComponents` PPR / Turbopack)、React 19                                                               |
-| 语言      | TypeScript strict                                                                                                                                         |
-| 环境变量  | `@t3-oss/env-nextjs` + Zod(server/client 分离,见 `src/env.ts`)                                                                                            |
-| UI        | Tailwind v4 + shadcn/ui(基于 `@base-ui/react`)+ Motion(`motion/react`,原 Framer Motion)+ Lenis(平滑滚动)+ `lucide-react` / `simple-icons` + `next-themes` |
-| 数据库    | Neon(Serverless Postgres)+ Drizzle ORM + drizzle-kit                                                                                                      |
-| 鉴权      | Auth.js v5(`next-auth@beta`)+ `@auth/drizzle-adapter` + GitHub OAuth + JWT/RBAC                                                                           |
-| 校验/表单 | Zod + React Hook Form                                                                                                                                     |
-| 存储      | Cloudflare R2(S3 兼容)+ 服务端预签名 — **规划中,尚未实现**(env 已配)                                                                                      |
-| AI        | Vercel AI SDK(`ai` + `@ai-sdk/openai` 经 `createOpenAI` 指向 GLM 兼容端点),流式;模型 `glm-4-flash`,env 用 `OPENAI_API_KEY` / `OPENAI_BASE_URL`            |
-| 测试      | Vitest + Testing Library + Playwright                                                                                                                     |
+| 层        | 选型                                                                                                                                                                   |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 框架      | Next.js 16(App Router / RSC / Server Actions / `cacheComponents` PPR / Turbopack)、React 19                                                                            |
+| 语言      | TypeScript strict                                                                                                                                                      |
+| 环境变量  | `@t3-oss/env-nextjs` + Zod(server/client 分离,见 `src/env.ts`)                                                                                                         |
+| UI        | Tailwind v4 + shadcn/ui(基于 `@base-ui/react`)+ Motion(`motion/react`,原 Framer Motion)+ Lenis(平滑滚动)+ `lucide-react` / `simple-icons` + `next-themes`              |
+| 数据库    | Neon(Serverless Postgres)+ Drizzle ORM + drizzle-kit                                                                                                                   |
+| 鉴权      | Auth.js v5(`next-auth@beta`)+ `@auth/drizzle-adapter` + GitHub OAuth + JWT/RBAC                                                                                        |
+| 校验/表单 | Zod + React Hook Form                                                                                                                                                  |
+| 存储      | Cloudflare R2(S3 兼容)+ 服务端预签名 — **规划中,尚未实现**(env 已配)                                                                                                   |
+| AI        | Vercel AI SDK(`ai`),provider 可切换:OpenAI 兼容(`@ai-sdk/openai`,含 GLM)/ Anthropic(`@ai-sdk/anthropic`),经 `src/lib/ai.ts` 的 `getModel()` 由 `AI_PROVIDER` 选择;流式 |
+| 测试      | Vitest + Testing Library + Playwright                                                                                                                                  |
 
 ## 设计基调(终端 / 工程美学)
 
@@ -72,7 +72,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 路由用 **route groups**:`src/app/(marketing)/*`(前台)、`src/app/(admin)/admin/*`(后台,中间件保护)、`src/app/api/*`(AI / Auth / OG)。
 - DB schema 按表拆文件于 `src/db/schema/*`,经 `schema/index.ts` 汇总导出;关系集中在 `relations.ts`;`db` 客户端在 `src/db/index.ts`。
 - 鉴权:服务端用 `import { auth } from "@/lib/auth"`;`/admin/*` 由 `src/middleware.ts` 拦截;角色在 `session.user.role`(`"admin" | "user"`,JWT 注入),Server Action 内做角色判断。
-- AI:`src/lib/ai.ts` 导出 `glm` 客户端与 `GLM_MODEL`;流式接口在 `src/app/api/ai/tags/route.ts`。
+- AI:`src/lib/ai.ts` 的 `getModel()` 按 `AI_PROVIDER`(openai 兼容 / anthropic)返回统一模型;流式接口 `src/app/api/ai/{tags,chat}/route.ts`。
 
 ## 安全(老项目的硬伤,务必避免重蹈)
 
