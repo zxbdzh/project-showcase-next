@@ -2,15 +2,15 @@ import { Suspense } from "react";
 import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import { getCategories, getTags } from "@/features/taxonomy/queries";
-import { getAdminProjectById, listAllProjectIds } from "@/features/projects/admin-queries";
+import { getAdminProjectById } from "@/features/projects/admin-queries";
 import { isStorageConfigured } from "@/lib/storage";
 import { ProjectForm } from "@/features/projects/components/project-form";
 import type { ProjectFormValues } from "@/features/projects/schema";
 
 export async function generateStaticParams() {
-  const ids = await listAllProjectIds();
-  // cacheComponents 要求至少返回一项;空表时给占位,页面会 notFound。
-  return ids.length ? ids.map((id) => ({ id })) : [{ id: "__none__" }];
+  // 后台编辑页按需动态渲染(EditForm 内 await connection()),无需构建期枚举所有项目、
+  // 也避免构建期连库。cacheComponents 要求至少返回一项,这里给固定占位,真实数据运行期再取。
+  return [{ id: "__none__" }];
 }
 
 export default function EditProjectPage({ params }: { params: Promise<{ id: string }> }) {
