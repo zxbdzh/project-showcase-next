@@ -1,4 +1,5 @@
 import type { ReactNode } from "react";
+import { Suspense } from "react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth";
@@ -15,7 +16,15 @@ const adminNav = [
   { href: "/admin/settings", label: "站点设置" },
 ];
 
-export default async function AdminLayout({ children }: { children: ReactNode }) {
+export default function AdminLayout({ children }: { children: ReactNode }) {
+  return (
+    <Suspense fallback={null}>
+      <AdminShell>{children}</AdminShell>
+    </Suspense>
+  );
+}
+
+async function AdminShell({ children }: { children: ReactNode }) {
   const session = await auth();
 
   if (!session?.user) {
@@ -29,8 +38,9 @@ export default async function AdminLayout({ children }: { children: ReactNode })
   return (
     <div className="flex min-h-screen flex-1">
       <aside className="border-border/60 hidden w-60 shrink-0 border-r p-4 md:block">
-        <Link href="/" className="mb-6 block px-2 text-sm font-semibold tracking-tight">
-          名字<span className="text-brand">.dev</span> 后台
+        <Link href="/" className="mb-6 block px-2 font-mono text-sm font-semibold tracking-tight">
+          <span className="text-muted-foreground">~/</span>zxb
+          <span className="text-brand"> $</span> 后台
         </Link>
         <nav className="flex flex-col gap-1 text-sm">
           {adminNav.map((item) => (

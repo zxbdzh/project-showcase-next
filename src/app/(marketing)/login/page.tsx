@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import { Container } from "@/components/shared/container";
@@ -10,7 +11,15 @@ export const metadata: Metadata = {
   description: "登录到作品集后台管理。",
 };
 
-export default async function LoginPage() {
+export default function LoginPage() {
+  return (
+    <Suspense fallback={null}>
+      <LoginContent />
+    </Suspense>
+  );
+}
+
+async function LoginContent() {
   const session = await auth();
   if (session?.user) redirect("/admin");
 

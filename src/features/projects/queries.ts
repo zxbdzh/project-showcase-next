@@ -1,9 +1,12 @@
 import { db } from "@/db";
 import { projects, categories, tags, projectsToTags } from "@/db/schema";
 import { eq, desc, asc, and, sql, ilike, count } from "drizzle-orm";
+import { cacheTag } from "next/cache";
 
 /** 获取精选项目(首页用) */
 export async function getFeaturedProjects(limit = 6) {
+  "use cache";
+  cacheTag("projects");
   return db
     .select({
       id: projects.id,
@@ -29,6 +32,8 @@ export async function getProjectList(params: {
   page?: number;
   pageSize?: number;
 }) {
+  "use cache";
+  cacheTag("projects");
   const { categorySlug, q, page = 1, pageSize = 12 } = params;
   const offset = (page - 1) * pageSize;
 
@@ -81,6 +86,8 @@ export async function getProjectList(params: {
 
 /** 获取项目详情(含标签) */
 export async function getProjectBySlug(slug: string) {
+  "use cache";
+  cacheTag("projects");
   const project = await db
     .select({
       id: projects.id,
@@ -123,6 +130,8 @@ export async function incrementProjectViews(id: string) {
 
 /** 获取相关项目(同分类,排除当前) */
 export async function getRelatedProjects(categoryId: string | null, excludeId: string, limit = 3) {
+  "use cache";
+  cacheTag("projects");
   if (!categoryId) return [];
 
   return db
@@ -144,4 +153,15 @@ export async function getRelatedProjects(categoryId: string | null, excludeId: s
     )
     .orderBy(desc(projects.createdAt))
     .limit(limit);
+}
+
+/** 所有已发布项目 slug(generateStaticParams 预生成详情页用) */
+export async function getPublishedProjectSlugs() {
+  "use cache";
+  cacheTag("projects");
+  const rows = await db
+    .select({ slug: projects.slug })
+    .from(projects)
+    .where(eq(projects.status, "published"));
+  return rows.map((r) => r.slug);
 }

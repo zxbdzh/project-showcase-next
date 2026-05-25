@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { after } from "next/server";
 import Link from "next/link";
 import { Link as TransitionLink } from "next-view-transitions";
 import { notFound } from "next/navigation";
@@ -6,16 +8,23 @@ import { ArrowUpRight, ArrowLeft, Eye } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
 import { buttonVariants } from "@/components/ui/button";
 import {
   getProjectBySlug,
   incrementProjectViews,
   getRelatedProjects,
+  getPublishedProjectSlugs,
 } from "@/features/projects/queries";
 import { MdxContent } from "./mdx-content";
 
 interface Props {
   params: Promise<{ slug: string }>;
+}
+
+export async function generateStaticParams() {
+  const slugs = await getPublishedProjectSlugs();
+  return slugs.map((slug) => ({ slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -34,13 +43,21 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function ProjectDetailPage({ params }: Props) {
+export default function ProjectDetailPage({ params }: Props) {
+  return (
+    <Suspense fallback={<ProjectDetailSkeleton />}>
+      <ProjectDetail params={params} />
+    </Suspense>
+  );
+}
+
+async function ProjectDetail({ params }: Props) {
   const { slug } = await params;
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
-  // 异步增加浏览量(不阻塞渲染)
-  incrementProjectViews(project.id);
+  // 响应后增加浏览量,不参与渲染 / 预渲染
+  after(() => incrementProjectViews(project.id));
 
   const related = await getRelatedProjects(project.category?.id ?? null, project.id);
 
@@ -171,6 +188,29 @@ export default async function ProjectDetailPage({ params }: Props) {
             </div>
           </FadeIn>
         )}
+      </Container>
+    </article>
+  );
+}
+
+function ProjectDetailSkeleton() {
+  return (
+    <article className="py-24 sm:py-32">
+      <Container className="max-w-[980px]">
+        <Skeleton className="h-4 w-28" />
+        <Skeleton className="mt-8 h-12 w-3/4" />
+        <Skeleton className="mt-4 h-6 w-1/2" />
+        <div className="mt-6 flex gap-3">
+          <Skeleton className="h-6 w-16" />
+          <Skeleton className="h-6 w-16" />
+          <Skeleton className="h-6 w-16" />
+        </div>
+        <Skeleton className="mt-10 aspect-video w-full rounded-2xl" />
+        <div className="mt-12 space-y-3">
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-full" />
+          <Skeleton className="h-4 w-2/3" />
+        </div>
       </Container>
     </article>
   );

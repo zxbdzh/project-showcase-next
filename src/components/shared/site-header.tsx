@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { Link } from "next-view-transitions";
 import { Container } from "./container";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { CommandMenuButton } from "@/components/command-palette";
+import { Skeleton } from "@/components/ui/skeleton";
 import { buttonVariants } from "@/components/ui/button";
 import { auth } from "@/lib/auth";
 
@@ -11,9 +13,7 @@ const navItems = [
   { href: "/contact", label: "联系" },
 ];
 
-export async function SiteHeader() {
-  const session = await auth();
-
+export function SiteHeader() {
   return (
     <header className="border-border/60 bg-background/70 sticky top-0 z-40 w-full border-b backdrop-blur-xl">
       <Container className="flex h-14 items-center justify-between">
@@ -35,27 +35,31 @@ export async function SiteHeader() {
         <div className="flex items-center gap-1.5">
           <CommandMenuButton />
           <ThemeToggle />
-          {session?.user ? (
-            <Link
-              href="/admin"
-              className={buttonVariants({
-                variant: "ghost",
-                size: "sm",
-                className: "rounded-full px-4",
-              })}
-            >
-              后台
-            </Link>
-          ) : (
-            <Link
-              href="/contact"
-              className={buttonVariants({ size: "sm", className: "rounded-full px-4" })}
-            >
-              合作
-            </Link>
-          )}
+          <Suspense fallback={<Skeleton className="h-8 w-16 rounded-full" />}>
+            <AuthNav />
+          </Suspense>
         </div>
       </Container>
     </header>
+  );
+}
+
+/** 依赖会话(cookies)的动态部分,单独流式渲染,避免阻塞整个 header */
+async function AuthNav() {
+  const session = await auth();
+  return session?.user ? (
+    <Link
+      href="/admin"
+      className={buttonVariants({ variant: "ghost", size: "sm", className: "rounded-full px-4" })}
+    >
+      后台
+    </Link>
+  ) : (
+    <Link
+      href="/contact"
+      className={buttonVariants({ size: "sm", className: "rounded-full px-4" })}
+    >
+      合作
+    </Link>
   );
 }

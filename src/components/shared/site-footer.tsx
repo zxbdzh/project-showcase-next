@@ -7,13 +7,15 @@ const links = [
   { href: "/contact", label: "联系" },
 ];
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  "use cache";
+  const year = new Date().getFullYear();
   return (
     <footer className="border-border/60 text-muted-foreground border-t py-12 text-sm">
       <Container className="flex flex-col items-center justify-between gap-4 sm:flex-row">
         <p className="font-mono text-xs">
-          <span className="text-muted-foreground/60 select-none">{"// "}</span>©{" "}
-          {new Date().getFullYear()} zxb · built with Next.js
+          <span className="text-muted-foreground/60 select-none">{"// "}</span>© {year} zxb · built
+          with Next.js
         </p>
         <div className="flex items-center gap-6">
           {links.map((l) => (
