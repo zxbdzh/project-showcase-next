@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getSocialLinks } from "@/features/social-links/queries";
 import { SocialLinkManager } from "@/features/social-links/components/social-link-manager";
 
@@ -15,6 +16,7 @@ export default function AdminSocialLinksPage() {
 }
 
 async function SocialLinkList() {
+  await connection();
   const rows = await getSocialLinks();
   return (
     <SocialLinkManager

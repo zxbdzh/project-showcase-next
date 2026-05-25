@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getSkills } from "@/features/skills/queries";
 import { SkillManager } from "@/features/skills/components/skill-manager";
 
@@ -15,6 +16,7 @@ export default function AdminSkillsPage() {
 }
 
 async function SkillList() {
+  await connection();
   const rows = await getSkills();
   return (
     <SkillManager

@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { Link } from "next-view-transitions";
 import { Plus } from "lucide-react";
 import { buttonVariants } from "@/components/ui/button";
@@ -31,6 +32,7 @@ export default function AdminProjectsPage() {
 }
 
 async function ProjectTable() {
+  await connection();
   const projects = await listAdminProjects();
 
   if (projects.length === 0) {

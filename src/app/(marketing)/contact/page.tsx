@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { CommentHeading } from "@/components/terminal";
@@ -10,7 +12,16 @@ export const metadata: Metadata = {
   description: "与我取得联系,讨论合作、技术交流或工作机会。",
 };
 
-export default async function ContactPage() {
+export default function ContactPage() {
+  return (
+    <Suspense fallback={null}>
+      <ContactContent />
+    </Suspense>
+  );
+}
+
+async function ContactContent() {
+  await connection();
   const socialLinks = await getSocialLinks();
 
   return (

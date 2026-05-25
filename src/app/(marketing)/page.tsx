@@ -1,3 +1,5 @@
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { Link } from "next-view-transitions";
 import { ArrowUpRight, ArrowRight } from "lucide-react";
 import { Container } from "@/components/shared/container";
@@ -20,7 +22,16 @@ const stats = [
   { value: 20, suffix: "+", label: "技术栈" },
 ];
 
-export default async function HomePage() {
+export default function HomePage() {
+  return (
+    <Suspense fallback={null}>
+      <HomeContent />
+    </Suspense>
+  );
+}
+
+async function HomeContent() {
+  await connection();
   const [featured, skills, hero] = await Promise.all([
     getFeaturedProjects(3),
     getSkills(),

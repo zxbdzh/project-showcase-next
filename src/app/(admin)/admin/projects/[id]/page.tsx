@@ -28,6 +28,8 @@ export default function EditProjectPage({ params }: { params: Promise<{ id: stri
 async function EditForm({ params }: { params: Promise<{ id: string }> }) {
   await connection();
   const { id } = await params;
+  // 构建期仅预渲染占位 id,直接 notFound,避免占位页在构建期连库。
+  if (id === "__none__") notFound();
   const [project, cats, tgs] = await Promise.all([
     getAdminProjectById(id),
     getCategories(),

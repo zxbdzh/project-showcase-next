@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getEditableProfile } from "@/features/profile/admin-queries";
 import { isStorageConfigured } from "@/lib/storage";
 import { ProfileForm } from "@/features/profile/components/profile-form";
@@ -19,6 +20,7 @@ export default function AdminProfilePage() {
 }
 
 async function ProfileEditor() {
+  await connection();
   const profile = await getEditableProfile();
   const uploadEnabled = isStorageConfigured();
 

@@ -1,4 +1,6 @@
 import type { Metadata } from "next";
+import { Suspense } from "react";
+import { connection } from "next/server";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
 import { Stagger, StaggerItem } from "@/components/motion/stagger";
@@ -14,7 +16,16 @@ export const metadata: Metadata = {
   description: "了解我的技术背景、技能栈和职业经历。",
 };
 
-export default async function AboutPage() {
+export default function AboutPage() {
+  return (
+    <Suspense fallback={null}>
+      <AboutContent />
+    </Suspense>
+  );
+}
+
+async function AboutContent() {
+  await connection();
   const [profile, skills, socialLinks] = await Promise.all([
     getAdminProfile(),
     getSkills(),

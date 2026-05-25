@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getHeroConfigForEdit } from "@/features/hero/admin-queries";
 import { HeroForm } from "@/features/hero/components/hero-form";
 
@@ -17,6 +18,7 @@ export default function AdminHeroPage() {
 }
 
 async function HeroEditor() {
+  await connection();
   const cfg = await getHeroConfigForEdit();
   return <HeroForm defaultValues={cfg} />;
 }

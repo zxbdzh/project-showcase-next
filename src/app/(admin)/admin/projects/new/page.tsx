@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getCategories, getTags } from "@/features/taxonomy/queries";
 import { isStorageConfigured } from "@/lib/storage";
 import { ProjectForm } from "@/features/projects/components/project-form";
@@ -33,6 +34,7 @@ export default function NewProjectPage() {
 }
 
 async function NewProjectForm() {
+  await connection();
   const [cats, tgs] = await Promise.all([getCategories(), getTags()]);
   const uploadEnabled = isStorageConfigured();
 

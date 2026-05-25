@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { getCategories } from "@/features/taxonomy/queries";
 import { CategoryManager } from "@/features/taxonomy/components/category-manager";
 
@@ -15,6 +16,7 @@ export default function AdminCategoriesPage() {
 }
 
 async function CategoryList() {
+  await connection();
   const rows = await getCategories();
   return (
     <CategoryManager

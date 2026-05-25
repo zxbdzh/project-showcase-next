@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
-import { after } from "next/server";
+import { after, connection } from "next/server";
 import Link from "next/link";
 import { Link as TransitionLink } from "next-view-transitions";
 import { notFound } from "next/navigation";
@@ -14,7 +14,6 @@ import {
   getProjectBySlug,
   incrementProjectViews,
   getRelatedProjects,
-  getPublishedProjectSlugs,
 } from "@/features/projects/queries";
 import { MdxContent } from "./mdx-content";
 
@@ -23,13 +22,14 @@ interface Props {
 }
 
 export async function generateStaticParams() {
-  const slugs = await getPublishedProjectSlugs();
-  return slugs.map((slug) => ({ slug }));
+  // 构建期不连库:返回占位 param 满足 cacheComponents 要求;真实详情页运行期按需渲染。
+  return [{ slug: "__none__" }];
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const project = await getProjectBySlug(slug);
+  if (slug === "__none__") return { title: "项目详情" };
+  const project = await getProjectBySlug(slug).catch(() => null);
   if (!project) return { title: "项目未找到" };
 
   return {
@@ -52,7 +52,10 @@ export default function ProjectDetailPage({ params }: Props) {
 }
 
 async function ProjectDetail({ params }: Props) {
+  await connection();
   const { slug } = await params;
+  // 构建期仅预渲染占位 slug,直接 notFound,避免占位页在构建期连库。
+  if (slug === "__none__") notFound();
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 

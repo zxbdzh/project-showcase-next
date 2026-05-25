@@ -1,5 +1,6 @@
 import type { ReactNode } from "react";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { auth, signOut } from "@/lib/auth";
@@ -26,6 +27,9 @@ export default function AdminLayout({ children }: { children: ReactNode }) {
 }
 
 async function AdminShell({ children }: { children: ReactNode }) {
+  // 后台整体为运行期动态:声明运行期连接,使整个子树在构建期 postpone、不连数据库
+  //(GitHub 构建机连不到自托管库)。各后台页的取数随之推迟到运行期(NAS 内可连库)。
+  await connection();
   const session = await auth();
 
   if (!session?.user) {
