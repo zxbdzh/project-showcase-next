@@ -15,6 +15,7 @@ import { CommentHeading } from "@/components/terminal";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 import { getHeroConfig } from "@/features/hero/queries";
+import { getModelId } from "@/lib/ai";
 
 const stats = [
   { value: 10, suffix: "+", label: "完整项目" },
@@ -158,7 +159,7 @@ async function HomeContent() {
               问问我的 AI 分身
             </h2>
             <p className="text-muted-foreground mt-3 max-w-md">
-              基于我的真实资料即时回答 —— 流式生成,由 GLM 驱动。
+              基于我的真实资料即时回答 —— 流式生成,由 {getModelId()} 驱动。
             </p>
           </FadeIn>
           <FadeIn delay={0.1}>

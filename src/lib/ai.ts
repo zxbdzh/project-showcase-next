@@ -31,3 +31,8 @@ export function getModel(): LanguageModel {
   // 多数 OpenAI 兼容端点(GLM、DeepSeek 等)只实现前者,用默认会 404。
   return openai.chat(env.AI_MODEL ?? DEFAULT_MODEL.openai);
 }
+
+/** 当前生效的模型 ID(用于前台展示),与 getModel() 的选择保持一致。 */
+export function getModelId(): string {
+  return env.AI_MODEL ?? DEFAULT_MODEL[env.AI_PROVIDER];
+}

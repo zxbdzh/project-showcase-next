@@ -51,5 +51,11 @@ export async function POST(req: Request) {
     },
   });
 
-  return result.toTextStreamResponse();
+  return result.toTextStreamResponse({
+    headers: {
+      // 关闭转换与缓冲,确保流式逐块直达浏览器(穿透 nginx/反代的默认响应缓冲)。
+      "Cache-Control": "no-cache, no-transform",
+      "X-Accel-Buffering": "no",
+    },
+  });
 }
