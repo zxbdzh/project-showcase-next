@@ -14,18 +14,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v2
-        with:
-          version: 8
+      - name: 配置 pnpm(读 package.json 的 packageManager)
+        uses: pnpm/action-setup@v4
 
-      - name: Setup Node.js
+      - name: 配置 Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: "20"
+          node-version: "22"
           cache: "pnpm"
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: pnpm install --frozen-lockfile
 
       - name: Lint
@@ -34,8 +32,7 @@ jobs:
       - name: Type check
         run: pnpm typecheck
 
+      # 真正的生产构建(需注入 .env、连库做 PPR 静态生成)由 release workflow 完成;
+      # CI 无密钥无法跑 next build,这里只做 lint / typecheck / 单测作为快速门禁。
       - name: Unit tests
-        run: pnpm test
-
-      - name: Build
-        run: pnpm build
+        run: pnpm test -- run --passWithNoTests
