@@ -9,7 +9,9 @@ ENV NEXT_TELEMETRY_DISABLED=1
 
 # ---- deps:安装全部依赖(含 dev,构建需要) ----
 FROM base AS deps
-COPY package.json pnpm-lock.yaml ./
+# pnpm-workspace.yaml 必须一起复制:其中的 allowBuilds 声明了 esbuild/sharp/unrs-resolver
+# 允许执行构建脚本;缺它则 pnpm 10+ 会拦截这些原生依赖的构建并以 exit 1 失败。
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN --mount=type=cache,id=pnpm-store,target=/root/.local/share/pnpm/store \
     pnpm install --frozen-lockfile
 
