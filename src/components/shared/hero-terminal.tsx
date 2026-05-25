@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState, type ReactNode } from "react";
+import { Link, useTransitionRouter } from "next-view-transitions";
 import { useInView, useReducedMotion } from "motion/react";
 import { GridBackdrop } from "@/components/terminal";
 
@@ -8,6 +9,18 @@ type Line = { id: number; kind: "cmd" | "out"; content: ReactNode };
 
 /** 终端可点击命令(help 会列出全部) */
 const COMMANDS = ["help", "whoami", "skills", "projects", "about", "contact"] as const;
+
+/** 可经 `/route` 直接跳转的站内路由 */
+const ROUTES = new Set(["/", "/projects", "/about", "/contact"]);
+
+/** 输出里的站内路由提示:可点击跳转(走 View Transitions) */
+function RouteLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link href={href} className="text-brand decoration-brand/40 underline-offset-2 hover:underline">
+      {children}
+    </Link>
+  );
+}
 
 /** 命令输出:克制、真实,不含微信小程序(uni-app 跨端) */
 function output(cmd: string): ReactNode {
@@ -48,22 +61,36 @@ function output(cmd: string): ReactNode {
           <p>{"  · WordMiniApp     uni-app + Spring Boot 全栈背单词"}</p>
           <p>{"  · clip-tool-next  Electron + FastAPI 直播切片工具"}</p>
           <p>{"  · moyu            Electron + Three.js 桌面应用"}</p>
-          <p className="text-brand mt-1">查看全部 → /projects</p>
+          <p className="mt-1">
+            <RouteLink href="/projects">查看全部 → /projects</RouteLink>
+          </p>
         </div>
       );
     case "about":
       return (
         <p className="text-muted-foreground">
-          习惯把复杂需求收敛成简洁、可上线、可维护的产品,把测试 / CI / Docker / 类型安全当工程底线。
-          <span className="text-brand"> 了解更多 → /about</span>
+          习惯把复杂需求收敛成简洁、可上线、可维护的产品,把测试 / CI / Docker / 类型安全当工程底线。{" "}
+          <RouteLink href="/about">了解更多 → /about</RouteLink>
         </p>
       );
     case "contact":
       return (
         <div className="text-muted-foreground">
-          <p>{"GitHub   github.com/zxbdzh"}</p>
+          <p>
+            {"GitHub   "}
+            <a
+              href="https://github.com/zxbdzh"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-brand decoration-brand/40 underline-offset-2 hover:underline"
+            >
+              github.com/zxbdzh
+            </a>
+          </p>
           <p>合作 · 全职 · 技术交流均欢迎</p>
-          <p className="text-brand">联系我 → /contact</p>
+          <p>
+            <RouteLink href="/contact">联系我 → /contact</RouteLink>
+          </p>
         </div>
       );
     default:
@@ -82,6 +109,7 @@ function output(cmd: string): ReactNode {
  */
 export function HeroTerminal() {
   const reduce = useReducedMotion();
+  const router = useTransitionRouter();
   const [history, setHistory] = useState<Line[]>([]);
   const [activeCmd, setActiveCmd] = useState<string | null>(null);
   const [input, setInput] = useState("");
@@ -98,19 +126,40 @@ export function HeroTerminal() {
   // 而非页面一加载就在屏幕外把动画播完(滚到这里只剩结果)。
   const inView = useInView(rootRef, { once: true, margin: "-80px" });
 
-  const commit = useCallback((cmd: string) => {
-    const c = cmd.trim();
-    if (!c) return;
-    if (c === "clear") {
-      setHistory([]);
-      return;
-    }
-    setHistory((h) => [
-      ...h,
-      { id: (idRef.current += 1), kind: "cmd", content: c },
-      { id: (idRef.current += 1), kind: "out", content: output(c) },
-    ]);
-  }, []);
+  const commit = useCallback(
+    (cmd: string) => {
+      const c = cmd.trim();
+      if (!c) return;
+      if (c === "clear") {
+        setHistory([]);
+        return;
+      }
+      // `/route` 直接跳转(走 View Transitions);未知路由仍落到 command not found
+      if (c.startsWith("/") && ROUTES.has(c)) {
+        setHistory((h) => [
+          ...h,
+          { id: (idRef.current += 1), kind: "cmd", content: c },
+          {
+            id: (idRef.current += 1),
+            kind: "out",
+            content: (
+              <p className="text-muted-foreground">
+                正在打开 <span className="text-brand">{c}</span> …
+              </p>
+            ),
+          },
+        ]);
+        router.push(c);
+        return;
+      }
+      setHistory((h) => [
+        ...h,
+        { id: (idRef.current += 1), kind: "cmd", content: c },
+        { id: (idRef.current += 1), kind: "out", content: output(c) },
+      ]);
+    },
+    [router]
+  );
 
   // 逐字「打」出命令(自动入场 / 点击触发);用户手输则直接 commit
   const play = useCallback(
@@ -143,11 +192,12 @@ export function HeroTerminal() {
     [busy, reduce, commit]
   );
 
-  // 入场:进入视口后再自动打出 whoami(只触发一次)
+  // 入场:进入视口后再自动打出 help(只触发一次)
+  // 用 help 而非 whoami —— 上方开机序列已 print whoami,这里改列命令以衔接「你来接管」
   useEffect(() => {
     if (!inView || startedRef.current) return;
     startedRef.current = true;
-    timers.current.push(setTimeout(() => play("whoami"), 320));
+    timers.current.push(setTimeout(() => play("help"), 320));
     // 仅在进入视口时播放一次
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inView]);

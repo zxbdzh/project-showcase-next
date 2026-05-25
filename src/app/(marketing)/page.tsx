@@ -31,6 +31,9 @@ export default async function HomePage() {
       <section className="pb-24 sm:pb-32">
         <Container>
           <FadeIn>
+            <CommentHeading className="mb-4">interactive — 这次你来试试</CommentHeading>
+          </FadeIn>
+          <FadeIn delay={0.08}>
             <HeroTerminal />
           </FadeIn>
         </Container>
