@@ -8,6 +8,7 @@ import { HeroTerminal } from "@/components/shared/hero-terminal";
 import { HeroIntro } from "@/components/shared/hero-intro";
 import { TechStackPills } from "@/components/shared/tech-stack-pills";
 import { CountUp } from "@/components/shared/count-up";
+import { AiChat } from "@/components/shared/ai-chat";
 import { CommentHeading } from "@/components/terminal";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
@@ -129,7 +130,27 @@ export default async function HomePage() {
         </Container>
       </section>
 
-      {/* ⑥ CTA */}
+      {/* ⑥ AI 对话分身 */}
+      <section className="border-border/60 border-t py-24">
+        <Container>
+          <FadeIn>
+            <CommentHeading>ask</CommentHeading>
+            <h2 className="mt-2 text-3xl font-semibold tracking-tight sm:text-4xl">
+              问问我的 AI 分身
+            </h2>
+            <p className="text-muted-foreground mt-3 max-w-md">
+              基于我的真实资料即时回答 —— 流式生成,由 GLM 驱动。
+            </p>
+          </FadeIn>
+          <FadeIn delay={0.1}>
+            <div className="mt-10">
+              <AiChat />
+            </div>
+          </FadeIn>
+        </Container>
+      </section>
+
+      {/* ⑦ CTA */}
       <section className="border-border/60 border-t py-28">
         <Container>
           <FadeIn>
