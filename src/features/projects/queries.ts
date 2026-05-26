@@ -155,6 +155,17 @@ export async function getRelatedProjects(categoryId: string | null, excludeId: s
     .limit(limit);
 }
 
+/** 已发布项目总数(首页「完整项目」统计用) */
+export async function countPublishedProjects() {
+  "use cache";
+  cacheTag("projects");
+  const [row] = await db
+    .select({ total: count() })
+    .from(projects)
+    .where(eq(projects.status, "published"));
+  return row?.total ?? 0;
+}
+
 /** 所有已发布项目 slug(generateStaticParams 预生成详情页用) */
 export async function getPublishedProjectSlugs() {
   "use cache";

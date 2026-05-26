@@ -12,17 +12,12 @@ import { TechStackPills } from "@/components/shared/tech-stack-pills";
 import { CountUp } from "@/components/shared/count-up";
 import { AiChat } from "@/components/shared/ai-chat";
 import { CommentHeading } from "@/components/terminal";
-import { getFeaturedProjects } from "@/features/projects/queries";
-import { getSkills } from "@/features/skills/queries";
+import { getFeaturedProjects, countPublishedProjects } from "@/features/projects/queries";
+import { getSkills, countSkills } from "@/features/skills/queries";
+import { countCategories } from "@/features/taxonomy/queries";
 import { getHeroConfig } from "@/features/hero/queries";
 import { getHeroCommands } from "@/features/hero/dynamic-commands";
 import { getModelId } from "@/lib/ai-config";
-
-const stats = [
-  { value: 10, suffix: "+", label: "完整项目" },
-  { value: 3, suffix: "", label: "技术领域" },
-  { value: 20, suffix: "+", label: "技术栈" },
-];
 
 export default function HomePage() {
   return (
@@ -34,12 +29,22 @@ export default function HomePage() {
 
 async function HomeContent() {
   await connection();
-  const [featured, skills, hero, heroCommands] = await Promise.all([
-    getFeaturedProjects(3),
-    getSkills(),
-    getHeroConfig(),
-    getHeroCommands(),
-  ]);
+  const [featured, skills, hero, heroCommands, projectsTotal, skillsTotal, categoriesTotal] =
+    await Promise.all([
+      getFeaturedProjects(3),
+      getSkills(),
+      getHeroConfig(),
+      getHeroCommands(),
+      countPublishedProjects(),
+      countSkills(),
+      countCategories(),
+    ]);
+
+  const stats = [
+    { value: projectsTotal, suffix: "", label: "完整项目" },
+    { value: categoriesTotal, suffix: "", label: "技术领域" },
+    { value: skillsTotal, suffix: "", label: "技术栈" },
+  ];
 
   return (
     <>
