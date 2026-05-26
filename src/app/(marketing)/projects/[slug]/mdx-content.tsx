@@ -6,6 +6,29 @@ import { cn } from "@/lib/utils";
 import { GalleryImage } from "@/components/gallery";
 
 /**
+ * 清理表格族元素(table/thead/tbody/tfoot/tr)的纯空白文本子节点。
+ *
+ * rehype-raw 会重新解析 raw HTML,把标签之间的换行/缩进保留成 text 节点,
+ * React 19 在 SSR → hydration 时会因 "whitespace text nodes cannot be a child of <table>" 报错。
+ * 浏览器本来就忽略这些空白,直接剔除即可,不影响视觉。
+ */
+function rehypeCleanTableWhitespace() {
+  const TABLE_TAGS = new Set(["table", "thead", "tbody", "tfoot", "tr"]);
+  type HastNode = { type?: string; tagName?: string; value?: string; children?: HastNode[] };
+  const walk = (node: HastNode) => {
+    if (!node || !Array.isArray(node.children)) return;
+    if (node.type === "element" && node.tagName && TABLE_TAGS.has(node.tagName)) {
+      node.children = node.children.filter(
+        (child) =>
+          !(child.type === "text" && typeof child.value === "string" && /^\s*$/.test(child.value))
+      );
+    }
+    for (const child of node.children) walk(child);
+  };
+  return (tree: HastNode) => walk(tree);
+}
+
+/**
  * 终端风 MDX 渲染。
  *
  * 兼容 GitHub README:`format: "md"` 走 commonmark 解析,
@@ -241,7 +264,8 @@ export function MdxContent({ source }: { source: string }) {
           // 让 remark-rehype 把 HTML 节点保留为 raw,再交由 rehype-raw 解析,
           // 这样 GitHub README 里常见的 <br>、<details>、<p align="center">、<kbd> 才能正常渲染。
           remarkRehypeOptions: { allowDangerousHtml: true },
-          rehypePlugins: [rehypeRaw],
+          // rehype-raw 之后跑空白清理,否则它生成的 text 节点会让 <table>/<tbody> 在 hydration 报错
+          rehypePlugins: [rehypeRaw, rehypeCleanTableWhitespace],
         },
       }}
     />

@@ -14,9 +14,20 @@ import {
   getRelatedProjects,
 } from "@/features/projects/queries";
 import { GalleryImage, GalleryProvider } from "@/components/gallery";
+import { AiChat } from "@/components/shared/ai-chat";
+import { PROJECT_AI_ANCHOR_ID, PROJECT_AI_INNER_ID } from "@/components/shared/ai-chat-anchor";
 import { MdxContent } from "./mdx-content";
 import { ProjectManifest } from "./project-manifest";
 import { RelatedProjects } from "./related-projects";
+
+/** 基于项目 techStack 拼项目专属建议问题。前两条静态,后两条按技术栈动态生成。 */
+function buildSeedQuestions(techStack: readonly string[] | null | undefined): string[] {
+  const stack = (techStack ?? []).filter(Boolean);
+  const dynamic: string[] = [];
+  if (stack[0]) dynamic.push(`为什么选 ${stack[0]}?`);
+  if (stack[1]) dynamic.push(`${stack[1]} 在项目里解决了什么?`);
+  return ["这个项目用了什么技术?", "怎么跑起来?", ...dynamic, "踩过什么坑?"].slice(0, 4);
+}
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -146,8 +157,26 @@ async function ProjectDetail({ params }: Props) {
             </FadeIn>
           )}
 
+          {/* AI 分身:问关于本项目的细节 / 选型 / 踩坑 / 部署 */}
+          <FadeIn delay={0.18}>
+            <section className="mt-16 scroll-mt-24" id={PROJECT_AI_ANCHOR_ID}>
+              <p className="text-muted-foreground mb-3 font-mono text-xs">
+                <span className="text-brand select-none">{"// "}</span>
+                fig.2 — 关于这个项目,问点别的
+              </p>
+              <AiChat
+                mode="project"
+                slug={project.slug}
+                projectTitle={project.title}
+                seedQuestions={buildSeedQuestions(project.techStack)}
+                storageKey={`ai-chat:project:${project.slug}`}
+                id={PROJECT_AI_INNER_ID}
+              />
+            </section>
+          </FadeIn>
+
           {/* 相关项目 */}
-          <FadeIn delay={0.2}>
+          <FadeIn delay={0.24}>
             <RelatedProjects items={related} />
           </FadeIn>
         </Container>

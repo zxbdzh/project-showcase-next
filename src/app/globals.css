@@ -141,6 +141,38 @@
     background: var(--brand);
     color: var(--primary-foreground);
   }
+
+  /* 滚动条:细 + 终端母题,WebKit + Firefox 双适配。
+     thumb 默认低明度暖灰,hover 切到 brand 琥珀。Lenis 接管根滚动后,
+     根 scrollbar 仍由浏览器渲染,改样式不影响 lenis 行为。 */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: color-mix(in srgb, var(--muted-foreground) 35%, transparent) transparent;
+  }
+  *::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  *::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  *::-webkit-scrollbar-thumb {
+    background-color: color-mix(in srgb, var(--muted-foreground) 30%, transparent);
+    border-radius: 4px;
+    /* 内缩 2px 透明边,让 thumb 与边缘有间距,等宽精致 */
+    background-clip: padding-box;
+    border: 2px solid transparent;
+    transition: background-color 0.15s ease-out;
+  }
+  *::-webkit-scrollbar-thumb:hover {
+    background-color: color-mix(in srgb, var(--brand) 55%, transparent);
+  }
+  *::-webkit-scrollbar-thumb:active {
+    background-color: color-mix(in srgb, var(--brand) 75%, transparent);
+  }
+  *::-webkit-scrollbar-corner {
+    background: transparent;
+  }
 }
 
 /* Lenis 平滑滚动 */
@@ -196,6 +228,22 @@ html.lenis body {
   animation: hero-cue-bounce 1.6s ease-in-out infinite;
 }
 
+/* AskAiButton 首次访客提示气泡:一次性渐入(opacity + translateY)。
+   forwards 保留终态;不循环,看到一次写入 localStorage 后整个节点卸载。 */
+@keyframes ask-ai-hint-in {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 4px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+.ask-ai-hint {
+  animation: ask-ai-hint-in 0.24s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
 /* ===== 项目卡片:方角 + 琥珀描边 hover(去发光) ===== */
 .project-card {
   transition:
@@ -214,7 +262,8 @@ html.lenis body {
 
 @media (prefers-reduced-motion: reduce) {
   .terminal-caret,
-  .hero-cue {
+  .hero-cue,
+  .ask-ai-hint {
     animation: none;
   }
   .project-card:hover {

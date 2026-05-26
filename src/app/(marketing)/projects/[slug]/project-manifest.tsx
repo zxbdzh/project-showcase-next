@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { ArrowUpRight, Eye } from "lucide-react";
 import { TerminalWindow, StatusDot } from "@/components/terminal";
+import { AskAiButton } from "@/components/shared/ask-ai-button";
 import { cn } from "@/lib/utils";
 
 /**
@@ -143,6 +144,7 @@ export function ProjectManifest({
               <ArrowUpRight className="size-3" />
             </Link>
           )}
+          <AskAiButton />
           <span className="text-muted-foreground/70 ml-auto inline-flex items-center gap-1">
             <Eye className="size-3" />
             {views.toLocaleString()} views

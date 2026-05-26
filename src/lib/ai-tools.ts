@@ -8,15 +8,23 @@ import { getSocialLinks } from "@/features/social-links/queries";
 /** 去除 Markdown/MDX 标记并截断,避免把整篇正文塞给模型(省 token)。 */
 function excerpt(md: string | null | undefined, max = 600): string {
   if (!md) return "";
-  const text = md
+  const text = stripMarkdown(md);
+  return text.length > max ? text.slice(0, max) + "…" : text;
+}
+
+/** 仅去标记不截断,供 getProjectReadme 分块取片段用。 */
+function stripMarkdown(md: string): string {
+  return md
     .replace(/```[\s\S]*?```/g, " ") // 代码块
     .replace(/!\[[^\]]*\]\([^)]*\)/g, " ") // 图片
     .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1") // 链接保留文字
     .replace(/[#>*_`~]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
-  return text.length > max ? text.slice(0, max) + "…" : text;
 }
+
+/** 服务端预 hydrate 项目元信息时用,模块外亦可复用(详情页 chat 路由) */
+export { excerpt };
 
 /**
  * AI 分身可调用的只读工具集。
@@ -120,6 +128,41 @@ export const aiTools = {
         website: profile?.website ?? null,
         location: profile?.location ?? null,
         socials: links.map((l) => ({ platform: l.platform, url: l.url })),
+      };
+    },
+  }),
+
+  getProjectReadme: tool({
+    description:
+      "按片段获取项目 README 正文(已去除 Markdown 标记)。" +
+      "项目专属 AI 分身在详情页用,system 已预置 ~1200 字摘录;" +
+      "若摘录不够,可调本工具按 offset+max 翻页取更多。",
+    inputSchema: z.object({
+      slug: z.string().describe("项目 slug"),
+      offset: z.number().int().nonnegative().optional().describe("起始字符位置,默认 0"),
+      max: z
+        .number()
+        .int()
+        .positive()
+        .max(3000)
+        .optional()
+        .describe("片段最大长度,默认 1500,上限 3000"),
+    }),
+    execute: async ({ slug, offset = 0, max = 1500 }) => {
+      const p = await getProjectBySlug(slug);
+      if (!p) return { found: false as const };
+      const text = stripMarkdown(p.content ?? "");
+      const length = text.length;
+      const slice = text.slice(offset, offset + max);
+      const nextOffset = offset + slice.length;
+      return {
+        found: true as const,
+        title: p.title,
+        offset,
+        length,
+        chunk: slice,
+        hasMore: nextOffset < length,
+        nextOffset: nextOffset < length ? nextOffset : null,
       };
     },
   }),

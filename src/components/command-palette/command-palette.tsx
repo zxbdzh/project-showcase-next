@@ -1,7 +1,7 @@
 "use client";
 
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
-import { useRouter } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
 import { useLenis } from "lenis/react";
 import {
@@ -12,6 +12,7 @@ import {
   User,
   Mail,
   Bot,
+  MessageSquare,
   Sun,
   Moon,
   Monitor,
@@ -20,6 +21,7 @@ import {
 } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
 import { Kbd } from "@/components/terminal";
+import { useScrollToProjectAi } from "@/components/shared/use-scroll-to-project-ai";
 import { cn } from "@/lib/utils";
 
 /** 唤起命令面板的全局事件名;header 按钮等可 dispatch 复用 */
@@ -36,6 +38,7 @@ type Command = {
 
 export function CommandPalette() {
   const router = useRouter();
+  const pathname = usePathname();
   const { setTheme } = useTheme();
   const lenis = useLenis();
   const [open, setOpen] = useState(false);
@@ -43,6 +46,14 @@ export function CommandPalette() {
   const [activeIndex, setActiveIndex] = useState(0);
   // 选中的命令延后到面板关闭动画结束再执行(见 execute / onOpenChangeComplete)。
   const [pending, setPending] = useState<Command | null>(null);
+
+  // 当前是否处于项目详情页:用于条件注册「问 AI 这个项目」快捷动作。
+  const isProjectDetail =
+    !!pathname && /^\/projects\/[^/]+$/.test(pathname) && !pathname.endsWith("/projects");
+
+  // 详情页「问 AI 这个项目」:由 onOpenChangeComplete(Dialog 关闭后)触发,
+  // 与 ProjectManifest 的 `$ ask --ai` 按钮共用同一份滚动+聚焦逻辑。
+  const jumpToProjectAi = useScrollToProjectAi();
 
   // 平滑滚动到首页的 AI 分身模块(id="ai")。Lenis(root)接管了滚动,原生 hash
   // 跳转会被它拉回顶部,故必须用 lenis.scrollTo;无 Lenis(reduced-motion)时降级原生。
@@ -100,7 +111,19 @@ export function CommandPalette() {
 
   const commands = useMemo<Command[]>(() => {
     const go = (href: string) => () => router.push(href);
-    return [
+    const list: Command[] = [];
+    // 详情页专属动作置顶,落在「上下文」分组,优先级最高。
+    if (isProjectDetail) {
+      list.push({
+        id: "ask-this-project",
+        label: "问 AI 这个项目",
+        group: "上下文",
+        icon: MessageSquare,
+        keywords: ["ask", "project", "ai", "本项目", "问", "细节"],
+        perform: jumpToProjectAi,
+      });
+    }
+    list.push(
       {
         id: "home",
         label: "首页",
@@ -172,9 +195,10 @@ export function CommandPalette() {
         icon: ExternalLink,
         keywords: ["github", "code", "zxbdzh"],
         perform: () => window.open("https://github.com/zxbdzh", "_blank", "noopener"),
-      },
-    ];
-  }, [router, setTheme, jumpToAi]);
+      }
+    );
+    return list;
+  }, [router, setTheme, jumpToAi, isProjectDetail, jumpToProjectAi]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
