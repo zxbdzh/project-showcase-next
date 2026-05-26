@@ -3,6 +3,8 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   // 自托管 Docker 部署:产出 .next/standalone 最小运行产物(自带 server.js)
   output: "standalone",
+  // nodemailer 含动态 require,交给 Node 原生加载而非打包,避免 Turbopack 打包报错
+  serverExternalPackages: ["nodemailer"],
   allowedDevOrigins: ["127.0.0.1"],
   cacheComponents: true,
   // 静态生成 / 取数阶段默认按 CPU 起多 worker(本机 19 个),每 worker 各建一个
