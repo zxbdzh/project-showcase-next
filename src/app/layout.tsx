@@ -72,8 +72,11 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-            <SmoothScroll>{children}</SmoothScroll>
-            <CommandPalette />
+            <SmoothScroll>
+              {children}
+              {/* 命令面板放进 SmoothScroll 内,才能拿到 Lenis 实例做平滑跳转 */}
+              <CommandPalette />
+            </SmoothScroll>
             <Toaster />
           </ThemeProvider>
         </body>

@@ -15,7 +15,7 @@ import { CommentHeading } from "@/components/terminal";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 import { getHeroConfig } from "@/features/hero/queries";
-import { getModelId } from "@/lib/ai";
+import { getModelId } from "@/lib/ai-config";
 
 const stats = [
   { value: 10, suffix: "+", label: "完整项目" },
@@ -151,7 +151,7 @@ async function HomeContent() {
       </section>
 
       {/* ⑥ AI 对话分身 */}
-      <section className="border-border/60 border-t py-24">
+      <section id="ai" className="border-border/60 scroll-mt-20 border-t py-24">
         <Container>
           <FadeIn>
             <CommentHeading>ask</CommentHeading>

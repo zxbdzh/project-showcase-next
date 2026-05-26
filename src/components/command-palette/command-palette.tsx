@@ -3,6 +3,7 @@
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useTheme } from "next-themes";
+import { useLenis } from "lenis/react";
 import {
   Search,
   CornerDownLeft,
@@ -10,6 +11,7 @@ import {
   FolderGit2,
   User,
   Mail,
+  Bot,
   Sun,
   Moon,
   Monitor,
@@ -35,9 +37,49 @@ type Command = {
 export function CommandPalette() {
   const router = useRouter();
   const { setTheme } = useTheme();
+  const lenis = useLenis();
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [activeIndex, setActiveIndex] = useState(0);
+  // 选中的命令延后到面板关闭动画结束再执行(见 execute / onOpenChangeComplete)。
+  const [pending, setPending] = useState<Command | null>(null);
+
+  // 平滑滚动到首页的 AI 分身模块(id="ai")。Lenis(root)接管了滚动,原生 hash
+  // 跳转会被它拉回顶部,故必须用 lenis.scrollTo;无 Lenis(reduced-motion)时降级原生。
+  // 不在首页则先 router.push("/"),再轮询等该模块挂载后滚动。
+  // 注意:本函数由 onOpenChangeComplete 在面板关闭动画结束后调用,确保 Dialog 的
+  // 滚动锁(modal overflow:hidden)已释放,否则会出现「已滚动但要等鼠标滚动才刷新」的卡顿。
+  const jumpToAi = useCallback(() => {
+    const scrollToAi = () => {
+      const el = document.getElementById("ai");
+      if (!el) return false;
+      if (lenis) {
+        // 跨页导航后 Lenis 缓存的可滚动高度(limit)仍是旧页面的值,直接 scrollTo
+        // 会被旧 limit 夹住而滚不到底部模块;先同步 resize() 重新测量。
+        lenis.resize();
+        lenis.scrollTo(el, { offset: -72 });
+      } else {
+        el.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+      return true;
+    };
+    if (window.location.pathname === "/") {
+      scrollToAi();
+      return;
+    }
+    // scroll:false 阻止 Next 导航后自动回顶(否则会盖掉我们的 lenis.scrollTo,表现为「只回了首页」)。
+    // 轮询等 #ai 挂载后滚动一次即停;再延时校正一次,纠正图片等晚加载导致的位移(避免多次 scrollTo 互相打架的卡顿)。
+    router.push("/", { scroll: false });
+    let tries = 0;
+    const timer = window.setInterval(() => {
+      if (scrollToAi()) {
+        window.clearInterval(timer);
+        window.setTimeout(scrollToAi, 400);
+      } else if (++tries > 60) {
+        window.clearInterval(timer);
+      }
+    }, 50);
+  }, [lenis, router]);
 
   // 全局 ⌘K / Ctrl+K 与自定义事件唤起
   useEffect(() => {
@@ -92,6 +134,14 @@ export function CommandPalette() {
         perform: go("/contact"),
       },
       {
+        id: "ai-clone",
+        label: "AI 分身",
+        group: "导航",
+        icon: Bot,
+        keywords: ["ai", "分身", "chat", "assistant", "问问", "对话"],
+        perform: jumpToAi,
+      },
+      {
         id: "theme-light",
         label: "亮色主题",
         group: "主题",
@@ -124,7 +174,7 @@ export function CommandPalette() {
         perform: () => window.open("https://github.com/zxbdzh", "_blank", "noopener"),
       },
     ];
-  }, [router, setTheme]);
+  }, [router, setTheme, jumpToAi]);
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
@@ -140,10 +190,12 @@ export function CommandPalette() {
     setActiveIndex(0);
   };
 
+  // 先关面板、把命令存入 pending,等关闭动画结束(onOpenChangeComplete)再执行。
+  // 否则命令(尤其 lenis.scrollTo)会在 Dialog 滚动锁未释放时跑,导致跳转卡顿。
   const execute = useCallback((cmd: Command) => {
+    setPending(cmd);
     setOpen(false);
     setQuery("");
-    cmd.perform();
   }, []);
 
   const onInputKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
@@ -166,6 +218,13 @@ export function CommandPalette() {
       onOpenChange={(o) => {
         setOpen(o);
         if (!o) setQuery("");
+      }}
+      onOpenChangeComplete={(o) => {
+        // 关闭动画完全结束(滚动锁已释放)后再跑选中的命令,见 execute 注释。
+        if (!o && pending) {
+          pending.perform();
+          setPending(null);
+        }
       }}
     >
       <DialogContent
