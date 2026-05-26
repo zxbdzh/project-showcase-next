@@ -1,21 +1,22 @@
 import type { Metadata } from "next";
 import { Suspense } from "react";
 import { after, connection } from "next/server";
-import Link from "next/link";
 import { Link as TransitionLink } from "next-view-transitions";
 import { notFound } from "next/navigation";
-import { ArrowUpRight, ArrowLeft, Eye } from "lucide-react";
+import { ArrowLeft, FileText } from "lucide-react";
 import { Container } from "@/components/shared/container";
 import { FadeIn } from "@/components/motion/fade-in";
-import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
-import { buttonVariants } from "@/components/ui/button";
+import { GridBackdrop } from "@/components/terminal";
 import {
   getProjectBySlug,
   incrementProjectViews,
   getRelatedProjects,
 } from "@/features/projects/queries";
+import { GalleryImage, GalleryProvider } from "@/components/gallery";
 import { MdxContent } from "./mdx-content";
+import { ProjectManifest } from "./project-manifest";
+import { RelatedProjects } from "./related-projects";
 
 interface Props {
   params: Promise<{ slug: string }>;
@@ -54,162 +55,125 @@ export default function ProjectDetailPage({ params }: Props) {
 async function ProjectDetail({ params }: Props) {
   await connection();
   const { slug } = await params;
-  // 构建期仅预渲染占位 slug,直接 notFound,避免占位页在构建期连库。
   if (slug === "__none__") notFound();
   const project = await getProjectBySlug(slug);
   if (!project) notFound();
 
-  // 响应后增加浏览量,不参与渲染 / 预渲染
+  // 响应后异步累加浏览量,不参与渲染
   after(() => incrementProjectViews(project.id));
 
   const related = await getRelatedProjects(project.category?.id ?? null, project.id);
 
   return (
-    <article className="py-24 sm:py-32">
-      <Container className="max-w-[980px]">
-        <FadeIn>
-          <TransitionLink
-            href="/projects"
-            className="text-muted-foreground hover:text-foreground mb-8 inline-flex items-center gap-1 text-sm transition-colors"
-          >
-            <ArrowLeft className="size-4" /> 返回作品列表
-          </TransitionLink>
-        </FadeIn>
+    <GalleryProvider>
+      <article className="relative isolate py-20 sm:py-28">
+        {/* 工程图纸网格底纹 */}
+        <GridBackdrop className="[mask-image:linear-gradient(to_bottom,black_0%,transparent_60%)] opacity-50" />
 
-        <FadeIn>
-          <h1 className="text-4xl font-semibold tracking-tight sm:text-5xl">{project.title}</h1>
-        </FadeIn>
-
-        {project.summary && (
-          <FadeIn delay={0.06}>
-            <p className="text-muted-foreground mt-4 text-xl">{project.summary}</p>
+        <Container className="max-w-[980px]">
+          {/* 返回链接(命令式) */}
+          <FadeIn>
+            <TransitionLink
+              href="/projects"
+              className="text-muted-foreground hover:text-brand mb-8 inline-flex items-center gap-1.5 font-mono text-xs transition-colors"
+            >
+              <ArrowLeft className="size-3.5" />
+              <span className="select-none">cd</span>
+              <span>../</span>
+            </TransitionLink>
           </FadeIn>
-        )}
 
-        <FadeIn delay={0.1}>
-          <div className="mt-6 flex flex-wrap items-center gap-3">
-            {project.category && (
-              <Badge variant="secondary" className="rounded-md">
-                {project.category.name}
-              </Badge>
-            )}
-            {project.tags?.map((tag) => (
-              <Badge key={tag.id} variant="outline" className="rounded-md">
-                {tag.name}
-              </Badge>
-            ))}
-            {project.techStack?.map((tech) => (
-              <Badge key={tech} variant="outline" className="rounded-md">
-                {tech}
-              </Badge>
-            ))}
-          </div>
-        </FadeIn>
+          {/* 主标题(SEO 唯一 H1) + summary - 隐藏视觉,manifest 已覆盖核心信息 */}
+          <h1 className="sr-only">{project.title}</h1>
 
-        <FadeIn delay={0.14}>
-          <div className="mt-6 flex items-center gap-4 text-sm">
-            {project.demoUrl && (
-              <Link
-                href={project.demoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({ size: "sm", className: "rounded-md" })}
-              >
-                在线演示 <ArrowUpRight className="size-3.5" />
-              </Link>
-            )}
-            {project.repoUrl && (
-              <Link
-                href={project.repoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className={buttonVariants({
-                  variant: "outline",
-                  size: "sm",
-                  className: "rounded-md",
-                })}
-              >
-                源代码 <ArrowUpRight className="size-3.5" />
-              </Link>
-            )}
-            <span className="text-muted-foreground flex items-center gap-1">
-              <Eye className="size-3.5" /> {project.views} 次浏览
-            </span>
-          </div>
-        </FadeIn>
-
-        {project.coverImage && (
-          <FadeIn delay={0.16}>
-            <div className="mt-10 aspect-video overflow-hidden rounded-md">
-              <img
-                src={project.coverImage}
-                alt={project.title}
-                style={{ viewTransitionName: `project-cover-${slug}` }}
-                className="size-full object-cover"
-              />
-            </div>
+          {/* Hero:项目 manifest 卡 */}
+          <FadeIn>
+            <ProjectManifest
+              title={project.title}
+              slug={project.slug}
+              summary={project.summary}
+              category={project.category}
+              createdAt={project.createdAt}
+              views={project.views}
+              featured={project.featured}
+              demoUrl={project.demoUrl}
+              repoUrl={project.repoUrl}
+              techStack={project.techStack}
+              tags={project.tags}
+            />
           </FadeIn>
-        )}
 
-        {project.content && (
+          {/* 封面图:工程化 fig 注释 caption,点击进入幻灯片 */}
+          {project.coverImage && (
+            <FadeIn delay={0.1}>
+              <figure className="mt-12">
+                <div className="border-border/60 aspect-video overflow-hidden rounded-md border">
+                  <GalleryImage
+                    src={project.coverImage}
+                    alt={project.title}
+                    style={{ viewTransitionName: `project-cover-${slug}` }}
+                    className="size-full object-cover"
+                  />
+                </div>
+                <figcaption className="text-muted-foreground mt-3 font-mono text-xs">
+                  <span className="text-brand select-none">{"// "}</span>
+                  fig.1 — {project.title} 系统界面
+                </figcaption>
+              </figure>
+            </FadeIn>
+          )}
+
+          {/* 正文:README 文件头 + MDX 内容 */}
+          {project.content && (
+            <FadeIn delay={0.14}>
+              <section className="mt-16">
+                {/* 文件头 banner */}
+                <header className="border-border/60 bg-muted/40 flex items-center justify-between rounded-t-md border border-b-0 px-4 py-2.5">
+                  <span className="text-muted-foreground inline-flex items-center gap-2 font-mono text-xs">
+                    <FileText className="size-3.5" />
+                    README.md
+                  </span>
+                  <span className="text-muted-foreground/70 font-mono text-[11px]">
+                    preview · markdown
+                  </span>
+                </header>
+
+                {/* 正文容器(底部圆角)。MDX 内部标题已自压制为 h2 视觉,避免双 H1 */}
+                <div className="border-border/60 bg-card/40 rounded-b-md border px-6 py-10 sm:px-10 sm:py-12">
+                  <MdxContent source={project.content} />
+                </div>
+              </section>
+            </FadeIn>
+          )}
+
+          {/* 相关项目 */}
           <FadeIn delay={0.2}>
-            <div className="prose prose-neutral dark:prose-invert mt-12 max-w-none">
-              <MdxContent source={project.content} />
-            </div>
+            <RelatedProjects items={related} />
           </FadeIn>
-        )}
-
-        {/* 相关项目 */}
-        {related.length > 0 && (
-          <FadeIn delay={0.24}>
-            <div className="border-border/60 mt-20 border-t pt-12">
-              <h2 className="text-2xl font-semibold tracking-tight">相关项目</h2>
-              <div className="mt-8 grid gap-6 md:grid-cols-3">
-                {related.map((p) => (
-                  <TransitionLink
-                    key={p.id}
-                    href={`/projects/${p.slug}`}
-                    className="group border-border/60 bg-card block rounded-md border p-6 transition-shadow hover:shadow-lg"
-                  >
-                    {p.coverImage ? (
-                      <div className="mb-4 aspect-video overflow-hidden rounded-sm">
-                        <img
-                          src={p.coverImage}
-                          alt={p.title}
-                          style={{ viewTransitionName: `project-cover-${p.slug}` }}
-                          className="size-full object-cover"
-                        />
-                      </div>
-                    ) : (
-                      <div className="bg-muted mb-4 aspect-video rounded-sm" />
-                    )}
-                    <h3 className="font-medium">{p.title}</h3>
-                    <p className="text-muted-foreground mt-1 line-clamp-2 text-sm">{p.summary}</p>
-                  </TransitionLink>
-                ))}
-              </div>
-            </div>
-          </FadeIn>
-        )}
-      </Container>
-    </article>
+        </Container>
+      </article>
+    </GalleryProvider>
   );
 }
 
 function ProjectDetailSkeleton() {
   return (
-    <article className="py-24 sm:py-32">
+    <article className="py-20 sm:py-28">
       <Container className="max-w-[980px]">
-        <Skeleton className="h-4 w-28" />
-        <Skeleton className="mt-8 h-12 w-3/4" />
-        <Skeleton className="mt-4 h-6 w-1/2" />
-        <div className="mt-6 flex gap-3">
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-6 w-16" />
-          <Skeleton className="h-6 w-16" />
+        <Skeleton className="h-4 w-20" />
+        {/* manifest card 占位 */}
+        <div className="mt-8 space-y-3">
+          <Skeleton className="h-10 w-full rounded-t-lg" />
+          <div className="space-y-2 px-4">
+            <Skeleton className="h-6 w-3/4" />
+            <Skeleton className="h-6 w-1/2" />
+            <Skeleton className="h-6 w-2/3" />
+            <Skeleton className="h-6 w-5/6" />
+            <Skeleton className="h-6 w-1/3" />
+          </div>
         </div>
-        <Skeleton className="mt-10 aspect-video w-full rounded-md" />
-        <div className="mt-12 space-y-3">
+        <Skeleton className="mt-12 aspect-video w-full rounded-md" />
+        <div className="mt-16 space-y-3">
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-full" />
           <Skeleton className="h-4 w-2/3" />
