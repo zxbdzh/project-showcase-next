@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { TerminalWindow } from "@/components/terminal";
+import { ChatMarkdown } from "@/components/shared/chat-markdown";
 
 type Msg = { role: "user" | "assistant"; content: string };
 
@@ -124,10 +125,16 @@ export function AiChat() {
                 <span className="text-foreground">{m.content}</span>
               </p>
             ) : (
-              <p key={i} className="text-muted-foreground whitespace-pre-wrap">
-                <span className="text-brand">→ </span>
-                {m.content || <span className="terminal-caret text-brand">▋</span>}
-              </p>
+              <div key={i} className="text-muted-foreground flex gap-2">
+                <span className="text-brand select-none">→</span>
+                <div className="min-w-0 flex-1">
+                  {m.content ? (
+                    <ChatMarkdown>{m.content}</ChatMarkdown>
+                  ) : (
+                    <span className="terminal-caret text-brand">▋</span>
+                  )}
+                </div>
+              </div>
             )
           )
         )}
