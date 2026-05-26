@@ -1,10 +1,9 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useForm, useFieldArray, Controller } from "react-hook-form";
+import { useForm, Controller } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { toast } from "sonner";
-import { Plus, Trash2 } from "lucide-react";
 import { Field } from "@/components/admin/field";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -23,8 +22,6 @@ export function HeroForm({ defaultValues }: { defaultValues: HeroConfig }) {
     resolver: zodResolver(heroConfigSchema),
     defaultValues,
   });
-
-  const { fields, append, remove } = useFieldArray({ control, name: "terminal.commands" });
 
   const onSubmit = handleSubmit(async (values) => {
     const payload: HeroConfig = {
@@ -47,10 +44,10 @@ export function HeroForm({ defaultValues }: { defaultValues: HeroConfig }) {
     <form onSubmit={onSubmit} className="max-w-2xl space-y-8">
       <p className="text-muted-foreground border-border/60 bg-muted/30 rounded-md border px-3 py-2 text-xs">
         <span className="text-brand font-mono">{"// "}</span>用{" "}
-        <span className="text-foreground">*星号*</span> 包裹文字标为品牌色高亮;终端输出里的{" "}
-        <span className="text-foreground">/projects</span> 等站内路由与网址会自动变成可点击链接。
-        <span className="text-foreground"> help</span> /{" "}
-        <span className="text-foreground">clear</span> 为内置命令。
+        <span className="text-foreground">*星号*</span>{" "}
+        包裹文字标为品牌色高亮。交互终端的命令(whoami / skills / projects / about / contact)现由{" "}
+        <span className="text-foreground">项目 / 技能 / 个人资料 / 社交链接</span>{" "}
+        数据实时生成,无需在此维护。
       </p>
 
       <fieldset className="space-y-8">
@@ -99,69 +96,6 @@ export function HeroForm({ defaultValues }: { defaultValues: HeroConfig }) {
             <Field label="次按钮链接" error={errors.intro?.secondaryCta?.href?.message}>
               <Input placeholder="/contact" {...register("intro.secondaryCta.href")} />
             </Field>
-          </div>
-        </section>
-
-        {/* 交互终端 */}
-        <section className="space-y-5">
-          <div className="flex items-center justify-between">
-            <h2 className="font-mono text-sm font-medium">
-              <span className="text-brand">{"// "}</span>交互终端命令
-            </h2>
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={() => append({ name: "", desc: "", output: "" })}
-              disabled={fields.length >= 12}
-            >
-              <Plus className="size-4" />
-              新增命令
-            </Button>
-          </div>
-
-          {errors.terminal?.commands?.message && (
-            <p className="text-destructive text-xs">{errors.terminal.commands.message}</p>
-          )}
-
-          <div className="space-y-4">
-            {fields.map((f, i) => (
-              <div key={f.id} className="border-border/60 space-y-4 rounded-md border p-4">
-                <div className="grid gap-4 sm:grid-cols-2">
-                  <Field
-                    label="命令名"
-                    error={errors.terminal?.commands?.[i]?.name?.message}
-                    hint="小写字母 / 数字 / 连字符"
-                  >
-                    <Input placeholder="skills" {...register(`terminal.commands.${i}.name`)} />
-                  </Field>
-                  <Field
-                    label="描述(help 里显示)"
-                    error={errors.terminal?.commands?.[i]?.desc?.message}
-                  >
-                    <Input placeholder="技术栈" {...register(`terminal.commands.${i}.desc`)} />
-                  </Field>
-                </div>
-                <Field
-                  label="输出(支持多行)"
-                  error={errors.terminal?.commands?.[i]?.output?.message}
-                >
-                  <Textarea rows={4} {...register(`terminal.commands.${i}.output`)} />
-                </Field>
-                <div className="flex justify-end">
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="sm"
-                    onClick={() => remove(i)}
-                    className="text-muted-foreground hover:text-destructive"
-                  >
-                    <Trash2 className="size-4" />
-                    删除
-                  </Button>
-                </div>
-              </div>
-            ))}
           </div>
         </section>
       </fieldset>

@@ -15,6 +15,7 @@ import { CommentHeading } from "@/components/terminal";
 import { getFeaturedProjects } from "@/features/projects/queries";
 import { getSkills } from "@/features/skills/queries";
 import { getHeroConfig } from "@/features/hero/queries";
+import { getHeroCommands } from "@/features/hero/dynamic-commands";
 import { getModelId } from "@/lib/ai-config";
 
 const stats = [
@@ -33,10 +34,11 @@ export default function HomePage() {
 
 async function HomeContent() {
   await connection();
-  const [featured, skills, hero] = await Promise.all([
+  const [featured, skills, hero, heroCommands] = await Promise.all([
     getFeaturedProjects(3),
     getSkills(),
     getHeroConfig(),
+    getHeroCommands(),
   ]);
 
   return (
@@ -51,7 +53,7 @@ async function HomeContent() {
             <CommentHeading className="mb-4">interactive — 这次你来试试</CommentHeading>
           </FadeIn>
           <FadeIn delay={0.08}>
-            <HeroTerminal commands={hero.terminal.commands} />
+            <HeroTerminal commands={heroCommands} />
           </FadeIn>
         </Container>
       </section>
