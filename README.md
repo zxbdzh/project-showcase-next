@@ -4,6 +4,8 @@
 
 # project-showcase-next
 
+[English](README.en.md)
+
 **全栈作品集 + CMS 后台。** 终端 / 工程美学,端到端类型安全,Next.js 16 RSC + 流式 AI。
 
 <sub>// Live · <a href="https://project.zxbdwy.online">project.zxbdwy.online</a></sub>
